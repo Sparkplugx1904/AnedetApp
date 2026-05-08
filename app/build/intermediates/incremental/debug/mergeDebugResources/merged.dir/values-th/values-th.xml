@@ -41,7 +41,11 @@
     <string name="btn_capture">ถ่ายภาพ</string>
     <string name="btn_close">ปิด</string>
     <string name="btn_continue">ดำเนินการต่อ</string>
+    <string name="btn_delete">ลบ</string>
+    <string name="btn_ok">ตกลง</string>
     <string name="btn_save">บันทึก</string>
+    <string name="btn_settings">การตั้งค่า</string>
+    <string name="btn_share">แชร์</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"รับสาย"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"วิดีโอ"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"ปฏิเสธ"</string>
@@ -49,6 +53,13 @@
     <string msgid="6107532579223922871" name="call_notification_incoming_text">"สายเรียกเข้า"</string>
     <string msgid="8623827134497363134" name="call_notification_ongoing_text">"สายที่สนทนาอยู่"</string>
     <string msgid="59049573811482460" name="call_notification_screening_text">"กำลังสกรีนสายเรียกเข้า"</string>
+    <string name="camera_title">ตรวจจับโรคโลหิตจาง</string>
+    <string name="cd_capture_button">ปุ่มถ่ายภาพ</string>
+    <string name="cd_flip_camera_button">ปุ่มสลับกล้อง</string>
+    <string name="cd_history_button">ปุ่มประวัติ</string>
+    <string name="cd_live_inference_button">ปุ่มการอนุมานสด</string>
+    <string name="cd_result_image">ภาพผลลัพธ์</string>
+    <string name="cd_torch_button">ปุ่มไฟฉาย</string>
     <string name="character_counter_content_description">ป้อนอักขระแล้ว %1$d จาก %2$d ตัว</string>
     <string name="character_counter_overflowed_content_description">เกินจำนวนอักขระสูงสุด %1$d จาก %2$d</string>
     <string name="clear_text_end_icon_content_description">ล้างข้อความ</string>
@@ -58,12 +69,29 @@
     <string msgid="6312721426453364202" name="default_popup_window_title">"หน้าต่างป๊อปอัป"</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"เมนูแบบเลื่อนลง"</string>
     <string name="error_a11y_label">ข้อผิดพลาด: ไม่ถูกต้อง</string>
+    <string name="error_camera_init">เริ่มต้นกล้องไม่สำเร็จ</string>
+    <string name="error_crop_invalid">พื้นที่เยื่อบุตาเล็กเกินไป</string>
     <string name="error_icon_content_description">ข้อผิดพลาด</string>
+    <string name="error_inference_failed">การอนุมานล้มเหลว ลองอีกครั้ง</string>
+    <string name="error_model_not_found">ไม่พบโมเดล กรุณาติดตั้งแอปใหม่</string>
+    <string name="error_unknown">เกิดข้อผิดพลาด</string>
     <string name="exposed_dropdown_menu_content_description">แสดงเมนูแบบเลื่อนลง</string>
+    <string name="flip_camera">สลับกล้อง</string>
+    <string name="history">ประวัติ</string>
+    <string name="history_delete_confirm">ลบการตรวจนี้?</string>
+    <string name="history_deleted">ลบการตรวจแล้ว</string>
+    <string name="history_empty">ยังไม่มีประวัติการตรวจ</string>
+    <string name="history_filter_all">ทั้งหมด</string>
+    <string name="history_filter_anemia">โลหิตจาง</string>
+    <string name="history_filter_non_anemia">ไม่โลหิตจาง</string>
+    <string name="history_sort_newest">ล่าสุด</string>
+    <string name="history_sort_oldest">เก่าสุด</string>
+    <string name="history_title">ประวัติการตรวจ</string>
     <string name="icon_content_description">ไอคอนกล่องโต้ตอบ</string>
     <string msgid="6827826412747255547" name="in_progress">"กำลังดำเนินการ"</string>
     <string msgid="7933458017204019916" name="indeterminate">"เลือกบางส่วน"</string>
     <string name="item_view_role_description">แท็บ</string>
+    <string name="live_inference">การอนุมานสด</string>
     <string name="live_inference_warning_body">โหมดนี้จะประมวลผลภาพทุก 1 วินาที และอาจทำให้อุปกรณ์ทำงานช้าลงหรือร้อนขึ้น ต้องการดำเนินการต่อหรือไม่?</string>
     <string name="live_inference_warning_title">โหมดการอนุมานสด</string>
     <string msgid="2988463736136100848" name="m3c_bottom_sheet_collapse_description">"ยุบ Bottom Sheet"</string>
@@ -135,7 +163,7 @@
     <string name="material_timepicker_pm">PM</string>
     <string name="material_timepicker_select_time">เลือกเวลา</string>
     <string name="material_timepicker_text_input_mode_description">สลับไปโหมดป้อนข้อความเพื่อป้อนเวลา</string>
-    <string name="medical_disclaimer">ผลลัพธ์นี้ไม่ใช่การวินิจฉัยทางการแพทย์ โปรดปรึกษาแพทย์</string>
+    <string name="medical_disclaimer">⚠️ ผลลัพธ์นี้ไม่ใช่การวินิจฉัยทางการแพทย์ โปรดปรึกษาแพทย์เพื่อการวินิจฉัยที่แม่นยำ</string>
     <string name="mtrl_badge_numberless_content_description">การแจ้งเตือนใหม่</string>
     <string name="mtrl_checkbox_state_description_checked">เลือกไว้</string>
     <string name="mtrl_checkbox_state_description_indeterminate">เลือกบางส่วน</string>
@@ -184,16 +212,40 @@
     <string msgid="542007171693138492" name="navigation_menu">"เมนูการนำทาง"</string>
     <string name="no_conjunctiva">หันกล้องไปที่เยื่อบุตาส่วนล่าง</string>
     <string msgid="6610465462668679431" name="not_selected">"ไม่ได้เลือก"</string>
+    <string name="onboarding_btn_start">ฉันเข้าใจแล้ว เริ่มต้น</string>
+    <string name="onboarding_desc_1">แอปตรวจจับโรคโลหิตจางผ่านการวิเคราะห์เยื่อบุตาโดยใช้ปัญญาประดิษฐ์</string>
+    <string name="onboarding_desc_2">1. เปิดเปลือกตาล่าง\n2. หันกล้องไปที่บริเวณสีชมพู\n3. รอให้รูปหลายเหลี่ยมปรากฏ\n4. คลิกปุ่มกล้อง</string>
+    <string name="onboarding_desc_3">แอปนี้ไม่ใช่เครื่องมือวินิจฉัยทางการแพทย์ ผลลัพธ์ไม่ได้แทนการตรวจโดยแพทย์ ใช้สำหรับการคัดกรองเบื้องต้นเท่านั้น</string>
+    <string name="onboarding_skip">ข้าม</string>
+    <string name="onboarding_title_1">แอปนี้คืออะไร?</string>
+    <string name="onboarding_title_2">วิธีใช้งาน</string>
+    <string name="onboarding_title_3">คำเตือนสำคัญ</string>
     <string name="password_toggle_content_description">แสดงรหัสผ่าน</string>
+    <string name="permission_camera_desc">แอปต้องการเข้าถึงกล้องเพื่อตรวจจับโรคโลหิตจางผ่านเยื่อบุตา</string>
+    <string name="permission_camera_title">ต้องการสิทธิ์กล้อง</string>
+    <string name="permission_denied">ปฏิเสธสิทธิ์</string>
+    <string name="permission_open_settings">เปิดการตั้งค่า</string>
+    <string name="processing">กำลังประมวลผล…</string>
     <string msgid="5941395253238309765" name="range_end">"จุดสิ้นสุดของช่วง"</string>
     <string msgid="7097486360902471446" name="range_start">"จุดเริ่มต้นของช่วง"</string>
-    <string name="result_anemia">Anemia</string>
-    <string name="result_non_anemia">Non-Anemia</string>
+    <string name="result_anemia">โลหิตจาง</string>
+    <string name="result_non_anemia">ไม่โลหิตจาง</string>
+    <string name="result_title">ผลการวิเคราะห์เยื่อบุตา</string>
+    <string name="save_failed">บันทึกภาพไม่สำเร็จ</string>
     <string name="saved_to_gallery">บันทึกลงแกลเลอรีแล้ว</string>
+    <string name="score_detail">รายละเอียดคะแนน:</string>
     <string msgid="6264217191555673260" name="search_menu_title">"ค้นหา"</string>
     <string name="searchview_clear_text_content_description">ล้างข้อความ</string>
     <string name="searchview_navigation_content_description">กลับ</string>
     <string msgid="6043586758067023" name="selected">"เลือกไว้"</string>
+    <string name="settings_about">เกี่ยวกับ</string>
+    <string name="settings_language">ภาษา</string>
+    <string name="settings_theme">ธีม</string>
+    <string name="settings_theme_dark">มืด</string>
+    <string name="settings_theme_light">สว่าง</string>
+    <string name="settings_theme_system">ตามระบบ</string>
+    <string name="settings_title">การตั้งค่า</string>
+    <string name="settings_version">เวอร์ชัน</string>
     <string name="side_sheet_accessibility_pane_title">ชีตด้านข้าง</string>
     <string msgid="4139871816613051306" name="state_empty">"ว่าง"</string>
     <string msgid="5834637030682409883" name="state_off">"ปิดอยู่"</string>
@@ -204,4 +256,6 @@
     <string msgid="5946805113151406391" name="template_percent">"<ns1:g id="PERCENTAGE">%1$d</ns1:g> เปอร์เซ็นต์"</string>
     <string msgid="3765533235322692011" name="tooltip_description">"เคล็ดลับเครื่องมือ"</string>
     <string msgid="3124740595719787496" name="tooltip_label">"แสดงเคล็ดลับเครื่องมือ"</string>
+    <string name="torch_off">ปิดไฟฉาย</string>
+    <string name="torch_on">เปิดไฟฉาย</string>
 </resources>

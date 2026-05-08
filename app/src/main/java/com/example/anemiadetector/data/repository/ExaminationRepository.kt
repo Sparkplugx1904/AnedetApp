@@ -10,8 +10,9 @@ import javax.inject.Singleton
 class ExaminationRepository @Inject constructor(
     private val examinationDao: ExaminationDao
 ) {
-    fun getAll(): Flow<List<ExaminationEntity>> = examinationDao.getAllExaminations()
+    fun getAllExaminations(): Flow<List<ExaminationEntity>> = examinationDao.getAllExaminations()
     fun getByLabel(label: String): Flow<List<ExaminationEntity>> = examinationDao.getByLabel(label)
     suspend fun insert(exam: ExaminationEntity): Long = examinationDao.insert(exam)
     suspend fun delete(exam: ExaminationEntity) = examinationDao.delete(exam)
+    suspend fun deleteAll() = examinationDao.deleteAll()
 }

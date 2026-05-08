@@ -1,6 +1,10 @@
 package com.example.anemiadetector;
 
+import com.example.anemiadetector.di.AppModule;
 import com.example.anemiadetector.di.DatabaseModule;
+import com.example.anemiadetector.ui.camera.CameraViewModel_HiltModules;
+import com.example.anemiadetector.ui.history.HistoryViewModel_HiltModules;
+import com.example.anemiadetector.ui.settings.SettingsViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -127,6 +131,7 @@ public final class AnemiaApp_HiltComponents {
       modules = {
           ActivityRetainedCBuilderModule.class,
           ServiceCBuilderModule.class,
+          AppModule.class,
           ApplicationContextModule.class,
           DatabaseModule.class,
           HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule.class
@@ -154,8 +159,11 @@ public final class AnemiaApp_HiltComponents {
       modules = {
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
+          CameraViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
-          HiltWrapper_SavedStateHandleModule.class
+          HiltWrapper_SavedStateHandleModule.class,
+          HistoryViewModel_HiltModules.KeyModule.class,
+          SettingsViewModel_HiltModules.KeyModule.class
       }
   )
   @ActivityRetainedScoped
@@ -190,7 +198,12 @@ public final class AnemiaApp_HiltComponents {
   }
 
   @Subcomponent(
-      modules = HiltWrapper_HiltViewModelFactory_ViewModelModule.class
+      modules = {
+          CameraViewModel_HiltModules.BindsModule.class,
+          HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
+          HistoryViewModel_HiltModules.BindsModule.class,
+          SettingsViewModel_HiltModules.BindsModule.class
+      }
   )
   @ViewModelScoped
   public abstract static class ViewModelC implements ViewModelComponent,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="http://schemas.android.com/tools">
+<resources>
     <color name="ic_launcher_background">#FF3B30</color>
     <color name="ic_launcher_foreground">#FFFFFF</color>
     <string name="app_name">Deteksi Anemia</string>
@@ -7,17 +7,69 @@
     <string name="btn_capture">Ambil Gambar</string>
     <string name="btn_close">Tutup</string>
     <string name="btn_continue">Lanjutkan</string>
+    <string name="btn_delete">Hapus</string>
+    <string name="btn_ok">OK</string>
     <string name="btn_save">Simpan</string>
+    <string name="btn_settings">Pengaturan</string>
+    <string name="btn_share">Bagikan</string>
+    <string name="camera_title">Deteksi Anemia</string>
+    <string name="cd_capture_button">Tombol ambil gambar</string>
+    <string name="cd_flip_camera_button">Tombol balik kamera</string>
+    <string name="cd_history_button">Tombol riwayat</string>
+    <string name="cd_live_inference_button">Tombol inferensi langsung</string>
+    <string name="cd_result_image">Gambar hasil</string>
+    <string name="cd_torch_button">Tombol senter</string>
+    <string name="error_camera_init">Gagal menginisialisasi kamera</string>
+    <string name="error_crop_invalid">Area konjungtiva terlalu kecil</string>
+    <string name="error_inference_failed">Inferensi gagal. Coba lagi.</string>
+    <string name="error_model_not_found">Model tidak ditemukan. Reinstall aplikasi.</string>
+    <string name="error_unknown">Terjadi kesalahan</string>
+    <string name="flip_camera">Balik Kamera</string>
+    <string name="history">Riwayat</string>
+    <string name="history_delete_confirm">Hapus pemeriksaan ini?</string>
+    <string name="history_deleted">Pemeriksaan dihapus</string>
+    <string name="history_empty">Belum ada riwayat pemeriksaan</string>
+    <string name="history_filter_all">Semua</string>
+    <string name="history_filter_anemia">Anemia</string>
+    <string name="history_filter_non_anemia">Non-Anemia</string>
+    <string name="history_sort_newest">Terbaru</string>
+    <string name="history_sort_oldest">Terlama</string>
+    <string name="history_title">Riwayat Pemeriksaan</string>
+    <string name="live_inference">Inferensi Langsung</string>
     <string name="live_inference_warning_body">Mode ini memproses gambar setiap 1 detik dan dapat menyebabkan perangkat melambat atau cepat panas. Lanjutkan?</string>
     <string name="live_inference_warning_title">Mode Inferensi Langsung</string>
-    <string name="medical_disclaimer">Hasil ini bukan diagnosis medis. Konsultasikan dengan dokter.</string>
+    <string name="medical_disclaimer">⚠️ Hasil ini bukan diagnosis medis. Konsultasikan dengan dokter untuk diagnosis yang akurat.</string>
     <string name="no_conjunctiva">Arahkan kamera ke konjungtiva mata bawah</string>
+    <string name="onboarding_btn_start">Saya Mengerti, Mulai</string>
+    <string name="onboarding_desc_1">Aplikasi deteksi anemia melalui analisis konjungtiva mata menggunakan kecerdasan buatan.</string>
+    <string name="onboarding_desc_2">1. Buka kelopak mata bawah\n2. Arahkan kamera ke area merah muda\n3. Tunggu polygon muncul\n4. Klik tombol kamera</string>
+    <string name="onboarding_desc_3">Aplikasi ini BUKAN alat diagnosis medis. Hasil tidak menggantikan pemeriksaan dokter. Gunakan sebagai screening awal saja.</string>
+    <string name="onboarding_skip">Lewati</string>
+    <string name="onboarding_title_1">Apa itu Aplikasi Ini?</string>
+    <string name="onboarding_title_2">Cara Penggunaan</string>
+    <string name="onboarding_title_3">Peringatan Penting</string>
+    <string name="permission_camera_desc">Aplikasi memerlukan akses kamera untuk mendeteksi anemia melalui konjungtiva mata.</string>
+    <string name="permission_camera_title">Izin Kamera Diperlukan</string>
+    <string name="permission_denied">Izin ditolak</string>
+    <string name="permission_open_settings">Buka Pengaturan</string>
+    <string name="processing">Memproses…</string>
     <string name="result_anemia">Anemia</string>
     <string name="result_non_anemia">Non-Anemia</string>
+    <string name="result_title">Hasil Analisis Konjungtiva</string>
+    <string name="save_failed">Gagal menyimpan gambar</string>
     <string name="saved_to_gallery">Tersimpan di Galeri</string>
-    <style name="Theme.AnemiaDetector" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <string name="score_detail">Skor Detail:</string>
+    <string name="settings_about">Tentang</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_dark">Gelap</string>
+    <string name="settings_theme_light">Terang</string>
+    <string name="settings_theme_system">Ikuti Sistem</string>
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_version">Versi</string>
+    <string name="torch_off">Senter Mati</string>
+    <string name="torch_on">Senter Nyala</string>
+    <style name="Theme.AnemiaDetector" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
-        <item name="android:windowLightStatusBar" ns1:targetApi="m">false</item>
     </style>
 </resources>

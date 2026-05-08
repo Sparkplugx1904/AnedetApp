@@ -8,5 +8,5 @@ import javax.inject.Inject
 class GetHistoryUseCase @Inject constructor(
     private val examinationRepository: ExaminationRepository
 ) {
-    operator fun invoke(): Flow<List<ExaminationEntity>> = examinationRepository.getAll()
+    operator fun invoke(): Flow<List<ExaminationEntity>> = examinationRepository.getAllExaminations()
 }

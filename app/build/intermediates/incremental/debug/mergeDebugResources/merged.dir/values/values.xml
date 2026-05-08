@@ -1931,7 +1931,11 @@
     <string name="btn_capture">Ambil Gambar</string>
     <string name="btn_close">Tutup</string>
     <string name="btn_continue">Lanjutkan</string>
+    <string name="btn_delete">Hapus</string>
+    <string name="btn_ok">OK</string>
     <string name="btn_save">Simpan</string>
+    <string name="btn_settings">Pengaturan</string>
+    <string name="btn_share">Bagikan</string>
     <string name="call_notification_answer_action">Answer</string>
     <string name="call_notification_answer_video_action">Video</string>
     <string name="call_notification_decline_action">Decline</string>
@@ -1939,6 +1943,13 @@
     <string name="call_notification_incoming_text">Incoming call</string>
     <string name="call_notification_ongoing_text">Ongoing call</string>
     <string name="call_notification_screening_text">Screening an incoming call</string>
+    <string name="camera_title">Deteksi Anemia</string>
+    <string name="cd_capture_button">Tombol ambil gambar</string>
+    <string name="cd_flip_camera_button">Tombol balik kamera</string>
+    <string name="cd_history_button">Tombol riwayat</string>
+    <string name="cd_live_inference_button">Tombol inferensi langsung</string>
+    <string name="cd_result_image">Gambar hasil</string>
+    <string name="cd_torch_button">Tombol senter</string>
     <string name="character_counter_content_description">Characters entered %1$d of %2$d</string>
     <string name="character_counter_overflowed_content_description">Character limit exceeded %1$d of %2$d</string>
     <string name="character_counter_pattern" translatable="false">%1$d/%2$d</string>
@@ -1951,15 +1962,32 @@
     <string description="Screen reader announcement for when a checkbox is on error. [CHAR LIMIT=NONE]" name="error_a11y_label">
     Error: invalid
   </string>
+    <string name="error_camera_init">Gagal menginisialisasi kamera</string>
+    <string name="error_crop_invalid">Area konjungtiva terlalu kecil</string>
     <string name="error_icon_content_description">Error</string>
+    <string name="error_inference_failed">Inferensi gagal. Coba lagi.</string>
+    <string name="error_model_not_found">Model tidak ditemukan. Reinstall aplikasi.</string>
+    <string name="error_unknown">Terjadi kesalahan</string>
     <string name="exposed_dropdown_menu_content_description">Show dropdown menu</string>
     <string name="fab_transformation_scrim_behavior" translatable="false">com.google.android.material.transformation.FabTransformationScrimBehavior</string>
     <string name="fab_transformation_sheet_behavior" translatable="false">com.google.android.material.transformation.FabTransformationSheetBehavior</string>
+    <string name="flip_camera">Balik Kamera</string>
     <string name="hide_bottom_view_on_scroll_behavior" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
+    <string name="history">Riwayat</string>
+    <string name="history_delete_confirm">Hapus pemeriksaan ini?</string>
+    <string name="history_deleted">Pemeriksaan dihapus</string>
+    <string name="history_empty">Belum ada riwayat pemeriksaan</string>
+    <string name="history_filter_all">Semua</string>
+    <string name="history_filter_anemia">Anemia</string>
+    <string name="history_filter_non_anemia">Non-Anemia</string>
+    <string name="history_sort_newest">Terbaru</string>
+    <string name="history_sort_oldest">Terlama</string>
+    <string name="history_title">Riwayat Pemeriksaan</string>
     <string description="Content description for an icon that appears in the title area of a dialog" name="icon_content_description">Dialog Icon</string>
     <string name="in_progress">In progress</string>
     <string name="indeterminate">Partially checked</string>
     <string name="item_view_role_description">Tab</string>
+    <string name="live_inference">Inferensi Langsung</string>
     <string name="live_inference_warning_body">Mode ini memproses gambar setiap 1 detik dan dapat menyebabkan perangkat melambat atau cepat panas. Lanjutkan?</string>
     <string name="live_inference_warning_title">Mode Inferensi Langsung</string>
     <string name="m3_exceed_max_badge_text_suffix" translatable="false"><ns2:g example="Some te" id="part of a long text">%1$s</ns2:g><ns2:g example="…" id="suffix">%2$s</ns2:g></string>
@@ -2060,7 +2088,7 @@
     <string description="Suffix for time in 12-hour standard, after noon. [CHAR_LIMIT=2]" name="material_timepicker_pm">PM</string>
     <string description="Title for the dialog with a time picker. [CHAR_LIMIT=32]" name="material_timepicker_select_time">Select time</string>
     <string name="material_timepicker_text_input_mode_description">Switch to text input mode for the time input.</string>
-    <string name="medical_disclaimer">Hasil ini bukan diagnosis medis. Konsultasikan dengan dokter.</string>
+    <string name="medical_disclaimer">⚠️ Hasil ini bukan diagnosis medis. Konsultasikan dengan dokter untuk diagnosis yang akurat.</string>
     <string description="Content description for new notification (no number count) [CHAR_LIMIT=NONE]" name="mtrl_badge_numberless_content_description">New notification</string>
     <string name="mtrl_checkbox_button_icon_path_checked" translatable="false">M14,18.2 11.4,15.6 10,17 14,21 22,13 20.6,11.6z</string>
     <string name="mtrl_checkbox_button_icon_path_group_name" translatable="false">icon</string>
@@ -2132,16 +2160,32 @@
     <string name="navigation_menu">"Navigation menu"</string>
     <string name="no_conjunctiva">Arahkan kamera ke konjungtiva mata bawah</string>
     <string name="not_selected">Not selected</string>
+    <string name="onboarding_btn_start">Saya Mengerti, Mulai</string>
+    <string name="onboarding_desc_1">Aplikasi deteksi anemia melalui analisis konjungtiva mata menggunakan kecerdasan buatan.</string>
+    <string name="onboarding_desc_2">1. Buka kelopak mata bawah\n2. Arahkan kamera ke area merah muda\n3. Tunggu polygon muncul\n4. Klik tombol kamera</string>
+    <string name="onboarding_desc_3">Aplikasi ini BUKAN alat diagnosis medis. Hasil tidak menggantikan pemeriksaan dokter. Gunakan sebagai screening awal saja.</string>
+    <string name="onboarding_skip">Lewati</string>
+    <string name="onboarding_title_1">Apa itu Aplikasi Ini?</string>
+    <string name="onboarding_title_2">Cara Penggunaan</string>
+    <string name="onboarding_title_3">Peringatan Penting</string>
     <string name="password_toggle_content_description">Show password</string>
     <string name="path_password_eye" translatable="false">M12,4.5C7,4.5 2.73,7.61 1,12c1.73,4.39 6,7.5 11,7.5s9.27,-3.11 11,-7.5c-1.73,-4.39 -6,-7.5 -11,-7.5zM12,17c-2.76,0 -5,-2.24 -5,-5s2.24,-5 5,-5 5,2.24 5,5 -2.24,5 -5,5zM12,9c-1.66,0 -3,1.34 -3,3s1.34,3 3,3 3,-1.34 3,-3 -1.34,-3 -3,-3z</string>
     <string name="path_password_eye_mask_strike_through" translatable="false">M2,4.27 L19.73,22 L22.27,19.46 L4.54,1.73 L4.54,1 L23,1 L23,23 L1,23 L1,4.27 Z</string>
     <string name="path_password_eye_mask_visible" translatable="false">M2,4.27 L2,4.27 L4.54,1.73 L4.54,1.73 L4.54,1 L23,1 L23,23 L1,23 L1,4.27 Z</string>
     <string name="path_password_strike_through" translatable="false">M3.27,4.27 L19.74,20.74</string>
+    <string name="permission_camera_desc">Aplikasi memerlukan akses kamera untuk mendeteksi anemia melalui konjungtiva mata.</string>
+    <string name="permission_camera_title">Izin Kamera Diperlukan</string>
+    <string name="permission_denied">Izin ditolak</string>
+    <string name="permission_open_settings">Buka Pengaturan</string>
+    <string name="processing">Memproses…</string>
     <string name="range_end">"Range end"</string>
     <string name="range_start">"Range start"</string>
     <string name="result_anemia">Anemia</string>
     <string name="result_non_anemia">Non-Anemia</string>
+    <string name="result_title">Hasil Analisis Konjungtiva</string>
+    <string name="save_failed">Gagal menyimpan gambar</string>
     <string name="saved_to_gallery">Tersimpan di Galeri</string>
+    <string name="score_detail">Skor Detail:</string>
     <string name="search_menu_title">Search</string>
     <string name="searchbar_scrolling_view_behavior" translatable="false">
     com.google.android.material.search.SearchBar$ScrollingViewBehavior
@@ -2149,6 +2193,14 @@
     <string description="Content description for the X button to clear text [CHAR_LIMIT=NONE]" name="searchview_clear_text_content_description">Clear text</string>
     <string description="Content description for the navigation button to return to the previous screen [CHAR_LIMIT=NONE]" name="searchview_navigation_content_description">Back</string>
     <string name="selected">Selected</string>
+    <string name="settings_about">Tentang</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_dark">Gelap</string>
+    <string name="settings_theme_light">Terang</string>
+    <string name="settings_theme_system">Ikuti Sistem</string>
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_version">Versi</string>
     <string description="Title of the side sheet&apos;s accessibility pane that is spoken by TalkBack when the side sheet appears on screen. [CHAR_LIMIT=NONE]" name="side_sheet_accessibility_pane_title">Side Sheet</string>
     <string name="side_sheet_behavior" translatable="false">com.google.android.material.sidesheet.SideSheetBehavior</string>
     <string name="state_empty">Empty</string>
@@ -2160,6 +2212,8 @@
     <string name="template_percent"><ns2:g id="percentage">%1$d</ns2:g> percent.</string>
     <string name="tooltip_description">tooltip</string>
     <string name="tooltip_label">show tooltip</string>
+    <string name="torch_off">Senter Mati</string>
+    <string name="torch_on">Senter Nyala</string>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
     <style name="AlertDialog.AppCompat.Light" parent="Base.AlertDialog.AppCompat.Light"/>
     <style name="Animation.AppCompat.Dialog" parent="Base.Animation.AppCompat.Dialog"/>
@@ -6383,10 +6437,8 @@
     </style>
     <style name="TextAppearance.Widget.AppCompat.Toolbar.Title" parent="Base.TextAppearance.Widget.AppCompat.Toolbar.Title">
     </style>
-    <style name="Theme.AnemiaDetector" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.AnemiaDetector" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
-        <item name="android:windowLightStatusBar" ns1:targetApi="m">false</item>
     </style>
     <style name="Theme.AppCompat" parent="Base.Theme.AppCompat"/>
     <style name="Theme.AppCompat.CompactMenu" parent="Base.Theme.AppCompat.CompactMenu"/>

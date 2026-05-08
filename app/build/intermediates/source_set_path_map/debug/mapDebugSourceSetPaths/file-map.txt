@@ -76,10 +76,10 @@ com.example.anemiadetector.app-ui-text-release-74 C:\Users\Ananda\.gradle\caches
 com.example.anemiadetector.app-fragment-1.5.1-75 C:\Users\Ananda\.gradle\caches\8.10.2\transforms\ec5f63fbb663b87922c8ad20cce2977b\transformed\fragment-1.5.1\res
 com.example.anemiadetector.app-ui-util-release-76 C:\Users\Ananda\.gradle\caches\8.10.2\transforms\f2093a7ad2470dc466d09238ff8b1aed\transformed\ui-util-release\res
 com.example.anemiadetector.app-material-icons-extended-release-77 C:\Users\Ananda\.gradle\caches\8.10.2\transforms\f36ec7027de739e2240d9bba6d5d965c\transformed\material-icons-extended-release\res
-com.example.anemiadetector.app-pngs-78 C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\build\generated\res\pngs\debug
-com.example.anemiadetector.app-resValues-79 C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\build\generated\res\resValues\debug
-com.example.anemiadetector.app-packageDebugResources-80 C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.example.anemiadetector.app-packageDebugResources-81 C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.example.anemiadetector.app-debug-82 C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.example.anemiadetector.app-debug-83 C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\debug\res
-com.example.anemiadetector.app-main-84 C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\res
+com.example.anemiadetector.app-pngs-78 C:\Users\Ananda\Documents\GitHub\AnedetApp\app\build\generated\res\pngs\debug
+com.example.anemiadetector.app-resValues-79 C:\Users\Ananda\Documents\GitHub\AnedetApp\app\build\generated\res\resValues\debug
+com.example.anemiadetector.app-packageDebugResources-80 C:\Users\Ananda\Documents\GitHub\AnedetApp\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.anemiadetector.app-packageDebugResources-81 C:\Users\Ananda\Documents\GitHub\AnedetApp\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.anemiadetector.app-debug-82 C:\Users\Ananda\Documents\GitHub\AnedetApp\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.example.anemiadetector.app-debug-83 C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\debug\res
+com.example.anemiadetector.app-main-84 C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\res

@@ -6,6 +6,25 @@ import android.view.View;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
+import com.example.anemiadetector.data.local.AppDatabase;
+import com.example.anemiadetector.data.local.dao.ExaminationDao;
+import com.example.anemiadetector.data.repository.ExaminationRepository;
+import com.example.anemiadetector.data.repository.InferenceRepository;
+import com.example.anemiadetector.data.repository.InferenceRepositoryImpl;
+import com.example.anemiadetector.di.AppModule_ProvideAnemiaClassifierFactory;
+import com.example.anemiadetector.di.AppModule_ProvideConjunctivaSegmentorFactory;
+import com.example.anemiadetector.di.AppModule_ProvideInferenceRepositoryFactory;
+import com.example.anemiadetector.di.DatabaseModule_ProvideAppDatabaseFactory;
+import com.example.anemiadetector.di.DatabaseModule_ProvideExaminationDaoFactory;
+import com.example.anemiadetector.domain.usecase.RunPreprocessingUseCase;
+import com.example.anemiadetector.ml.classification.AnemiaClassifier;
+import com.example.anemiadetector.ml.segmentation.ConjunctivaSegmentor;
+import com.example.anemiadetector.ui.camera.CameraViewModel;
+import com.example.anemiadetector.ui.camera.CameraViewModel_HiltModules;
+import com.example.anemiadetector.ui.history.HistoryViewModel;
+import com.example.anemiadetector.ui.history.HistoryViewModel_HiltModules;
+import com.example.anemiadetector.ui.settings.SettingsViewModel;
+import com.example.anemiadetector.ui.settings.SettingsViewModel_HiltModules;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.internal.builders.ActivityComponentBuilder;
@@ -20,14 +39,19 @@ import dagger.hilt.android.internal.lifecycle.DefaultViewModelFactories_Internal
 import dagger.hilt.android.internal.managers.ActivityRetainedComponentManager_LifecycleModule_ProvideActivityRetainedLifecycleFactory;
 import dagger.hilt.android.internal.managers.SavedStateHandleHolder;
 import dagger.hilt.android.internal.modules.ApplicationContextModule;
+import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideContextFactory;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
+import dagger.internal.IdentifierNameString;
+import dagger.internal.KeepFieldType;
+import dagger.internal.LazyClassKeyMap;
+import dagger.internal.MapBuilder;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @DaggerGenerated
 @Generated(
@@ -49,25 +73,20 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
     return new Builder();
   }
 
-  public static AnemiaApp_HiltComponents.SingletonC create() {
-    return new Builder().build();
-  }
-
   public static final class Builder {
+    private ApplicationContextModule applicationContextModule;
+
     private Builder() {
     }
 
-    /**
-     * @deprecated This module is declared, but an instance is not used in the component. This method is a no-op. For more, see https://dagger.dev/unused-modules.
-     */
-    @Deprecated
     public Builder applicationContextModule(ApplicationContextModule applicationContextModule) {
-      Preconditions.checkNotNull(applicationContextModule);
+      this.applicationContextModule = Preconditions.checkNotNull(applicationContextModule);
       return this;
     }
 
     public AnemiaApp_HiltComponents.SingletonC build() {
-      return new SingletonCImpl();
+      Preconditions.checkBuilderRequirement(applicationContextModule, ApplicationContextModule.class);
+      return new SingletonCImpl(applicationContextModule);
     }
   }
 
@@ -361,12 +380,12 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     @Override
     public DefaultViewModelFactories.InternalFactoryFactory getHiltInternalFactoryFactory() {
-      return DefaultViewModelFactories_InternalFactoryFactory_Factory.newInstance(Collections.<Class<?>, Boolean>emptyMap(), new ViewModelCBuilder(singletonCImpl, activityRetainedCImpl));
+      return DefaultViewModelFactories_InternalFactoryFactory_Factory.newInstance(getViewModelKeys(), new ViewModelCBuilder(singletonCImpl, activityRetainedCImpl));
     }
 
     @Override
     public Map<Class<?>, Boolean> getViewModelKeys() {
-      return Collections.<Class<?>, Boolean>emptyMap();
+      return LazyClassKeyMap.<Boolean>of(MapBuilder.<String, Boolean>newMapBuilder(3).put(LazyClassKeyProvider.com_example_anemiadetector_ui_camera_CameraViewModel, CameraViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_example_anemiadetector_ui_history_HistoryViewModel, HistoryViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_example_anemiadetector_ui_settings_SettingsViewModel, SettingsViewModel_HiltModules.KeyModule.provide()).build());
     }
 
     @Override
@@ -383,6 +402,24 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
     public ViewComponentBuilder viewComponentBuilder() {
       return new ViewCBuilder(singletonCImpl, activityRetainedCImpl, activityCImpl);
     }
+
+    @IdentifierNameString
+    private static final class LazyClassKeyProvider {
+      static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
+
+      static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
+
+      static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
+
+      @KeepFieldType
+      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
+
+      @KeepFieldType
+      CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;
+
+      @KeepFieldType
+      SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
+    }
   }
 
   private static final class ViewModelCImpl extends AnemiaApp_HiltComponents.ViewModelC {
@@ -392,23 +429,91 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     private final ViewModelCImpl viewModelCImpl = this;
 
+    private Provider<CameraViewModel> cameraViewModelProvider;
+
+    private Provider<HistoryViewModel> historyViewModelProvider;
+
+    private Provider<SettingsViewModel> settingsViewModelProvider;
+
     private ViewModelCImpl(SingletonCImpl singletonCImpl,
         ActivityRetainedCImpl activityRetainedCImpl, SavedStateHandle savedStateHandleParam,
         ViewModelLifecycle viewModelLifecycleParam) {
       this.singletonCImpl = singletonCImpl;
       this.activityRetainedCImpl = activityRetainedCImpl;
 
+      initialize(savedStateHandleParam, viewModelLifecycleParam);
 
     }
 
+    @SuppressWarnings("unchecked")
+    private void initialize(final SavedStateHandle savedStateHandleParam,
+        final ViewModelLifecycle viewModelLifecycleParam) {
+      this.cameraViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
+      this.historyViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
+      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
+    }
+
     @Override
-    public Map<Class<?>, Provider<ViewModel>> getHiltViewModelMap() {
-      return Collections.<Class<?>, Provider<ViewModel>>emptyMap();
+    public Map<Class<?>, javax.inject.Provider<ViewModel>> getHiltViewModelMap() {
+      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(3).put(LazyClassKeyProvider.com_example_anemiadetector_ui_camera_CameraViewModel, ((Provider) cameraViewModelProvider)).put(LazyClassKeyProvider.com_example_anemiadetector_ui_history_HistoryViewModel, ((Provider) historyViewModelProvider)).put(LazyClassKeyProvider.com_example_anemiadetector_ui_settings_SettingsViewModel, ((Provider) settingsViewModelProvider)).build());
     }
 
     @Override
     public Map<Class<?>, Object> getHiltViewModelAssistedMap() {
       return Collections.<Class<?>, Object>emptyMap();
+    }
+
+    @IdentifierNameString
+    private static final class LazyClassKeyProvider {
+      static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
+
+      static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
+
+      static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
+
+      @KeepFieldType
+      CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;
+
+      @KeepFieldType
+      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
+
+      @KeepFieldType
+      SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
+    }
+
+    private static final class SwitchingProvider<T> implements Provider<T> {
+      private final SingletonCImpl singletonCImpl;
+
+      private final ActivityRetainedCImpl activityRetainedCImpl;
+
+      private final ViewModelCImpl viewModelCImpl;
+
+      private final int id;
+
+      SwitchingProvider(SingletonCImpl singletonCImpl, ActivityRetainedCImpl activityRetainedCImpl,
+          ViewModelCImpl viewModelCImpl, int id) {
+        this.singletonCImpl = singletonCImpl;
+        this.activityRetainedCImpl = activityRetainedCImpl;
+        this.viewModelCImpl = viewModelCImpl;
+        this.id = id;
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public T get() {
+        switch (id) {
+          case 0: // com.example.anemiadetector.ui.camera.CameraViewModel 
+          return (T) new CameraViewModel(singletonCImpl.provideInferenceRepositoryProvider.get());
+
+          case 1: // com.example.anemiadetector.ui.history.HistoryViewModel 
+          return (T) new HistoryViewModel(singletonCImpl.examinationRepositoryProvider.get());
+
+          case 2: // com.example.anemiadetector.ui.settings.SettingsViewModel 
+          return (T) new SettingsViewModel(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          default: throw new AssertionError(id);
+        }
+      }
     }
   }
 
@@ -417,7 +522,7 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     private final ActivityRetainedCImpl activityRetainedCImpl = this;
 
-    private dagger.internal.Provider<ActivityRetainedLifecycle> provideActivityRetainedLifecycleProvider;
+    private Provider<ActivityRetainedLifecycle> provideActivityRetainedLifecycleProvider;
 
     private ActivityRetainedCImpl(SingletonCImpl singletonCImpl,
         SavedStateHandleHolder savedStateHandleHolderParam) {
@@ -442,7 +547,7 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
       return provideActivityRetainedLifecycleProvider.get();
     }
 
-    private static final class SwitchingProvider<T> implements dagger.internal.Provider<T> {
+    private static final class SwitchingProvider<T> implements Provider<T> {
       private final SingletonCImpl singletonCImpl;
 
       private final ActivityRetainedCImpl activityRetainedCImpl;
@@ -482,11 +587,43 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
   }
 
   private static final class SingletonCImpl extends AnemiaApp_HiltComponents.SingletonC {
+    private final ApplicationContextModule applicationContextModule;
+
     private final SingletonCImpl singletonCImpl = this;
 
-    private SingletonCImpl() {
+    private Provider<RunPreprocessingUseCase> runPreprocessingUseCaseProvider;
 
+    private Provider<ConjunctivaSegmentor> provideConjunctivaSegmentorProvider;
 
+    private Provider<AnemiaClassifier> provideAnemiaClassifierProvider;
+
+    private Provider<InferenceRepositoryImpl> inferenceRepositoryImplProvider;
+
+    private Provider<InferenceRepository> provideInferenceRepositoryProvider;
+
+    private Provider<AppDatabase> provideAppDatabaseProvider;
+
+    private Provider<ExaminationRepository> examinationRepositoryProvider;
+
+    private SingletonCImpl(ApplicationContextModule applicationContextModuleParam) {
+      this.applicationContextModule = applicationContextModuleParam;
+      initialize(applicationContextModuleParam);
+
+    }
+
+    private ExaminationDao examinationDao() {
+      return DatabaseModule_ProvideExaminationDaoFactory.provideExaminationDao(provideAppDatabaseProvider.get());
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initialize(final ApplicationContextModule applicationContextModuleParam) {
+      this.runPreprocessingUseCaseProvider = DoubleCheck.provider(new SwitchingProvider<RunPreprocessingUseCase>(singletonCImpl, 2));
+      this.provideConjunctivaSegmentorProvider = DoubleCheck.provider(new SwitchingProvider<ConjunctivaSegmentor>(singletonCImpl, 3));
+      this.provideAnemiaClassifierProvider = DoubleCheck.provider(new SwitchingProvider<AnemiaClassifier>(singletonCImpl, 4));
+      this.inferenceRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<InferenceRepositoryImpl>(singletonCImpl, 1));
+      this.provideInferenceRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<InferenceRepository>(singletonCImpl, 0));
+      this.provideAppDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<AppDatabase>(singletonCImpl, 6));
+      this.examinationRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ExaminationRepository>(singletonCImpl, 5));
     }
 
     @Override
@@ -506,6 +643,46 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
     @Override
     public ServiceComponentBuilder serviceComponentBuilder() {
       return new ServiceCBuilder(singletonCImpl);
+    }
+
+    private static final class SwitchingProvider<T> implements Provider<T> {
+      private final SingletonCImpl singletonCImpl;
+
+      private final int id;
+
+      SwitchingProvider(SingletonCImpl singletonCImpl, int id) {
+        this.singletonCImpl = singletonCImpl;
+        this.id = id;
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public T get() {
+        switch (id) {
+          case 0: // com.example.anemiadetector.data.repository.InferenceRepository 
+          return (T) AppModule_ProvideInferenceRepositoryFactory.provideInferenceRepository(singletonCImpl.inferenceRepositoryImplProvider.get());
+
+          case 1: // com.example.anemiadetector.data.repository.InferenceRepositoryImpl 
+          return (T) new InferenceRepositoryImpl(singletonCImpl.runPreprocessingUseCaseProvider.get(), singletonCImpl.provideConjunctivaSegmentorProvider.get(), singletonCImpl.provideAnemiaClassifierProvider.get());
+
+          case 2: // com.example.anemiadetector.domain.usecase.RunPreprocessingUseCase 
+          return (T) new RunPreprocessingUseCase();
+
+          case 3: // com.example.anemiadetector.ml.segmentation.ConjunctivaSegmentor 
+          return (T) AppModule_ProvideConjunctivaSegmentorFactory.provideConjunctivaSegmentor(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 4: // com.example.anemiadetector.ml.classification.AnemiaClassifier 
+          return (T) AppModule_ProvideAnemiaClassifierFactory.provideAnemiaClassifier(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 5: // com.example.anemiadetector.data.repository.ExaminationRepository 
+          return (T) new ExaminationRepository(singletonCImpl.examinationDao());
+
+          case 6: // com.example.anemiadetector.data.local.AppDatabase 
+          return (T) DatabaseModule_ProvideAppDatabaseFactory.provideAppDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          default: throw new AssertionError(id);
+        }
+      }
     }
   }
 }

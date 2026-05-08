@@ -9,39 +9,39 @@
 9        android:targetSdkVersion="35" />
 10
 11    <uses-permission android:name="android.permission.CAMERA" />
-11-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:4:5-65
-11-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:4:22-62
+11-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:4:5-65
+11-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:4:22-62
 12    <uses-permission android:name="android.permission.FLASHLIGHT" />
-12-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:5:5-69
-12-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:5:22-66
+12-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:5:5-69
+12-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:5:22-66
 13    <uses-permission
-13-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:6:5-8:38
+13-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:6:5-8:38
 14        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-14-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:7:9-65
+14-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:7:9-65
 15        android:maxSdkVersion="28" />
-15-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:8:9-35
+15-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:8:9-35
 16    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-16-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:9:5-76
-16-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:9:22-73
+16-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:9:5-76
+16-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:9:22-73
 17
 18    <uses-feature
-18-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:11:5-84
+18-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:11:5-84
 19        android:name="android.hardware.camera"
-19-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:11:19-57
+19-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:11:19-57
 20        android:required="true" />
-20-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:11:58-81
+20-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:11:58-81
 21    <uses-feature
-21-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:12:5-95
+21-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:12:5-95
 22        android:name="android.hardware.camera.autofocus"
-22-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:12:19-67
+22-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:12:19-67
 23        android:required="false" />
-23-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:12:68-92
+23-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:12:68-92
 24    <uses-feature
-24-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:13:5-91
+24-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:13:5-91
 25        android:name="android.hardware.camera.flash"
-25-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:13:19-63
+25-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:13:19-63
 26        android:required="false" />
-26-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:13:64-88
+26-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:13:64-88
 27
 28    <permission
 28-->[androidx.core:core:1.13.1] C:\Users\Ananda\.gradle\caches\8.10.2\transforms\b9429796cafd8b8482fbaea4f74f3e93\transformed\core-1.13.1\AndroidManifest.xml:22:5-24:47
@@ -55,44 +55,44 @@
 32-->[androidx.core:core:1.13.1] C:\Users\Ananda\.gradle\caches\8.10.2\transforms\b9429796cafd8b8482fbaea4f74f3e93\transformed\core-1.13.1\AndroidManifest.xml:26:22-94
 33
 34    <application
-34-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:15:5-35:19
+34-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:15:5-35:19
 35        android:name="com.example.anemiadetector.AnemiaApp"
-35-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:16:9-34
+35-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:16:9-34
 36        android:allowBackup="false"
-36-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:17:9-36
+36-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:17:9-36
 37        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 37-->[androidx.core:core:1.13.1] C:\Users\Ananda\.gradle\caches\8.10.2\transforms\b9429796cafd8b8482fbaea4f74f3e93\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
 38        android:debuggable="true"
 39        android:extractNativeLibs="true"
 40        android:icon="@mipmap/ic_launcher"
-40-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:18:9-43
+40-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:18:9-43
 41        android:label="@string/app_name"
-41-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:19:9-41
+41-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:19:9-41
 42        android:localeConfig="@xml/locales_config"
-42-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:20:9-51
+42-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:20:9-51
 43        android:supportsRtl="true"
-43-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:21:9-35
+43-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:21:9-35
 44        android:theme="@style/Theme.AnemiaDetector" >
-44-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:22:9-52
+44-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:22:9-52
 45        <activity
-45-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:24:9-34:20
+45-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:24:9-34:20
 46            android:name="com.example.anemiadetector.MainActivity"
-46-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:25:13-41
+46-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:25:13-41
 47            android:exported="true"
-47-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:26:13-36
+47-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:26:13-36
 48            android:screenOrientation="portrait"
-48-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:27:13-49
+48-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:27:13-49
 49            android:windowSoftInputMode="adjustResize" >
-49-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:28:13-55
+49-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:28:13-55
 50            <intent-filter>
-50-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:29:13-33:29
+50-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:29:13-33:29
 51                <action android:name="android.intent.action.MAIN" />
-51-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:30:17-69
-51-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:30:25-66
+51-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:30:17-69
+51-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:30:25-66
 52
 53                <category android:name="android.intent.category.LAUNCHER" />
-53-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:32:17-77
-53-->C:\Users\Ananda\Documents\GitHub\AnedetApp\App\app\src\main\AndroidManifest.xml:32:27-74
+53-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:32:17-77
+53-->C:\Users\Ananda\Documents\GitHub\AnedetApp\app\src\main\AndroidManifest.xml:32:27-74
 54            </intent-filter>
 55        </activity>
 56        <!--

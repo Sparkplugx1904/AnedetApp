@@ -1,15 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App Name -->
     <string name="app_name">ตรวจจับโรคโลหิตจาง</string>
-    <string name="live_inference_warning_title">โหมดการอนุมานสด</string>
-    <string name="live_inference_warning_body">โหมดนี้จะประมวลผลภาพทุก 1 วินาที และอาจทำให้อุปกรณ์ทำงานช้าลงหรือร้อนขึ้น ต้องการดำเนินการต่อหรือไม่?</string>
-    <string name="result_anemia">Anemia</string>
-    <string name="result_non_anemia">Non-Anemia</string>
-    <string name="no_conjunctiva">หันกล้องไปที่เยื่อบุตาส่วนล่าง</string>
-    <string name="saved_to_gallery">บันทึกลงแกลเลอรีแล้ว</string>
-    <string name="medical_disclaimer">ผลลัพธ์นี้ไม่ใช่การวินิจฉัยทางการแพทย์ โปรดปรึกษาแพทย์</string>
+    
+    <!-- Common -->
     <string name="btn_capture">ถ่ายภาพ</string>
     <string name="btn_save">บันทึก</string>
     <string name="btn_close">ปิด</string>
     <string name="btn_continue">ดำเนินการต่อ</string>
     <string name="btn_cancel">ยกเลิก</string>
+    <string name="btn_ok">ตกลง</string>
+    <string name="btn_settings">การตั้งค่า</string>
+    <string name="btn_delete">ลบ</string>
+    <string name="btn_share">แชร์</string>
+    
+    <!-- Camera Screen -->
+    <string name="camera_title">ตรวจจับโรคโลหิตจาง</string>
+    <string name="torch_on">เปิดไฟฉาย</string>
+    <string name="torch_off">ปิดไฟฉาย</string>
+    <string name="flip_camera">สลับกล้อง</string>
+    <string name="live_inference">การอนุมานสด</string>
+    <string name="history">ประวัติ</string>
+    
+    <!-- Inference States -->
+    <string name="no_conjunctiva">หันกล้องไปที่เยื่อบุตาส่วนล่าง</string>
+    <string name="processing">กำลังประมวลผล…</string>
+    <string name="result_anemia">โลหิตจาง</string>
+    <string name="result_non_anemia">ไม่โลหิตจาง</string>
+    
+    <!-- Live Inference Warning -->
+    <string name="live_inference_warning_title">โหมดการอนุมานสด</string>
+    <string name="live_inference_warning_body">โหมดนี้จะประมวลผลภาพทุก 1 วินาที และอาจทำให้อุปกรณ์ทำงานช้าลงหรือร้อนขึ้น ต้องการดำเนินการต่อหรือไม่?</string>
+    
+    <!-- Capture Result Sheet -->
+    <string name="result_title">ผลการวิเคราะห์เยื่อบุตา</string>
+    <string name="score_detail">รายละเอียดคะแนน:</string>
+    <string name="medical_disclaimer">⚠️ ผลลัพธ์นี้ไม่ใช่การวินิจฉัยทางการแพทย์ โปรดปรึกษาแพทย์เพื่อการวินิจฉัยที่แม่นยำ</string>
+    <string name="saved_to_gallery">บันทึกลงแกลเลอรีแล้ว</string>
+    <string name="save_failed">บันทึกภาพไม่สำเร็จ</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">แอปนี้คืออะไร?</string>
+    <string name="onboarding_desc_1">แอปตรวจจับโรคโลหิตจางผ่านการวิเคราะห์เยื่อบุตาโดยใช้ปัญญาประดิษฐ์</string>
+    <string name="onboarding_title_2">วิธีใช้งาน</string>
+    <string name="onboarding_desc_2">1. เปิดเปลือกตาล่าง\n2. หันกล้องไปที่บริเวณสีชมพู\n3. รอให้รูปหลายเหลี่ยมปรากฏ\n4. คลิกปุ่มกล้อง</string>
+    <string name="onboarding_title_3">คำเตือนสำคัญ</string>
+    <string name="onboarding_desc_3">แอปนี้ไม่ใช่เครื่องมือวินิจฉัยทางการแพทย์ ผลลัพธ์ไม่ได้แทนการตรวจโดยแพทย์ ใช้สำหรับการคัดกรองเบื้องต้นเท่านั้น</string>
+    <string name="onboarding_btn_start">ฉันเข้าใจแล้ว เริ่มต้น</string>
+    <string name="onboarding_skip">ข้าม</string>
+    
+    <!-- History Screen -->
+    <string name="history_title">ประวัติการตรวจ</string>
+    <string name="history_empty">ยังไม่มีประวัติการตรวจ</string>
+    <string name="history_filter_all">ทั้งหมด</string>
+    <string name="history_filter_anemia">โลหิตจาง</string>
+    <string name="history_filter_non_anemia">ไม่โลหิตจาง</string>
+    <string name="history_sort_newest">ล่าสุด</string>
+    <string name="history_sort_oldest">เก่าสุด</string>
+    <string name="history_delete_confirm">ลบการตรวจนี้?</string>
+    <string name="history_deleted">ลบการตรวจแล้ว</string>
+    
+    <!-- Settings Screen -->
+    <string name="settings_title">การตั้งค่า</string>
+    <string name="settings_language">ภาษา</string>
+    <string name="settings_theme">ธีม</string>
+    <string name="settings_theme_light">สว่าง</string>
+    <string name="settings_theme_dark">มืด</string>
+    <string name="settings_theme_system">ตามระบบ</string>
+    <string name="settings_about">เกี่ยวกับ</string>
+    <string name="settings_version">เวอร์ชัน</string>
+    
+    <!-- Permissions -->
+    <string name="permission_camera_title">ต้องการสิทธิ์กล้อง</string>
+    <string name="permission_camera_desc">แอปต้องการเข้าถึงกล้องเพื่อตรวจจับโรคโลหิตจางผ่านเยื่อบุตา</string>
+    <string name="permission_open_settings">เปิดการตั้งค่า</string>
+    <string name="permission_denied">ปฏิเสธสิทธิ์</string>
+    
+    <!-- Errors -->
+    <string name="error_model_not_found">ไม่พบโมเดล กรุณาติดตั้งแอปใหม่</string>
+    <string name="error_inference_failed">การอนุมานล้มเหลว ลองอีกครั้ง</string>
+    <string name="error_camera_init">เริ่มต้นกล้องไม่สำเร็จ</string>
+    <string name="error_crop_invalid">พื้นที่เยื่อบุตาเล็กเกินไป</string>
+    <string name="error_unknown">เกิดข้อผิดพลาด</string>
+    
+    <!-- Content Descriptions -->
+    <string name="cd_capture_button">ปุ่มถ่ายภาพ</string>
+    <string name="cd_torch_button">ปุ่มไฟฉาย</string>
+    <string name="cd_flip_camera_button">ปุ่มสลับกล้อง</string>
+    <string name="cd_live_inference_button">ปุ่มการอนุมานสด</string>
+    <string name="cd_history_button">ปุ่มประวัติ</string>
+    <string name="cd_result_image">ภาพผลลัพธ์</string>
 </resources>

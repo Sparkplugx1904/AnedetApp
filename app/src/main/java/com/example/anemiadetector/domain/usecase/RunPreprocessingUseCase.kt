@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class RunPreprocessingUseCase @Inject constructor() {
-    fun run(input: Bitmap): Bitmap {
+    fun execute(input: Bitmap): Bitmap {
         val wb = GrayWorldWhiteBalance.apply(input)
         val gamma = AdaptiveGammaCorrector.apply(wb)
         if (wb != input && !wb.isRecycled) wb.recycle()
