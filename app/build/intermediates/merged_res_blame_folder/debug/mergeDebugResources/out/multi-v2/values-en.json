@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-80:/values-en/values-en.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Ananda\\Documents\\GitHub\\AnedetApp\\App\\app\\src\\main\\res\\values-en\\strings.xml",
+                    "from": {
+                        "startLines": "1,13,9,11,12,10,3,2,8,6,4,5,7",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "17,850,662,754,799,711,149,71,563,416,308,358,500",
+                        "endColumns": "52,45,47,43,49,41,157,76,97,82,48,56,61",
+                        "endOffsets": "65,891,705,793,844,748,302,143,656,494,352,410,557"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,108,154,202,246,296,338,496,573,671,754,803,860",
+                        "endColumns": "52,45,47,43,49,41,157,76,97,82,48,56,61",
+                        "endOffsets": "103,149,197,241,291,333,491,568,666,749,798,855,917"
+                    }
+                }
+            ]
+        }
+    ]
+}

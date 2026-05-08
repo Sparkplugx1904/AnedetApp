@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Deteksi Anemia</string>
+    <string name="live_inference_warning_title">Mode Inferensi Langsung</string>
+    <string name="live_inference_warning_body">Mode ini memproses gambar setiap 1 detik dan dapat menyebabkan perangkat melambat atau cepat panas. Lanjutkan?</string>
+    <string name="result_anemia">Anemia</string>
+    <string name="result_non_anemia">Non-Anemia</string>
+    <string name="no_conjunctiva">Arahkan kamera ke konjungtiva mata bawah</string>
+    <string name="saved_to_gallery">Tersimpan di Galeri</string>
+    <string name="medical_disclaimer">Hasil ini bukan diagnosis medis. Konsultasikan dengan dokter.</string>
+    <string name="btn_capture">Ambil Gambar</string>
+    <string name="btn_save">Simpan</string>
+    <string name="btn_close">Tutup</string>
+    <string name="btn_continue">Lanjutkan</string>
+    <string name="btn_cancel">Batal</string>
+</resources>

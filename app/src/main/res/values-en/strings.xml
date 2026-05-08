@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Anemia Detector</string>
+    <string name="live_inference_warning_title">Live Inference Mode</string>
+    <string name="live_inference_warning_body">This mode processes images every 1 second and may cause the device to slow down or heat up. Continue?</string>
+    <string name="result_anemia">Anemia</string>
+    <string name="result_non_anemia">Non-Anemia</string>
+    <string name="no_conjunctiva">Aim the camera at the lower conjunctiva</string>
+    <string name="saved_to_gallery">Saved to Gallery</string>
+    <string name="medical_disclaimer">This is not a medical diagnosis. Consult a doctor.</string>
+    <string name="btn_capture">Capture</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_close">Close</string>
+    <string name="btn_continue">Continue</string>
+    <string name="btn_cancel">Cancel</string>
+</resources>

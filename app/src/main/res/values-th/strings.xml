@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ตรวจจับโรคโลหิตจาง</string>
+    <string name="live_inference_warning_title">โหมดการอนุมานสด</string>
+    <string name="live_inference_warning_body">โหมดนี้จะประมวลผลภาพทุก 1 วินาที และอาจทำให้อุปกรณ์ทำงานช้าลงหรือร้อนขึ้น ต้องการดำเนินการต่อหรือไม่?</string>
+    <string name="result_anemia">Anemia</string>
+    <string name="result_non_anemia">Non-Anemia</string>
+    <string name="no_conjunctiva">หันกล้องไปที่เยื่อบุตาส่วนล่าง</string>
+    <string name="saved_to_gallery">บันทึกลงแกลเลอรีแล้ว</string>
+    <string name="medical_disclaimer">ผลลัพธ์นี้ไม่ใช่การวินิจฉัยทางการแพทย์ โปรดปรึกษาแพทย์</string>
+    <string name="btn_capture">ถ่ายภาพ</string>
+    <string name="btn_save">บันทึก</string>
+    <string name="btn_close">ปิด</string>
+    <string name="btn_continue">ดำเนินการต่อ</string>
+    <string name="btn_cancel">ยกเลิก</string>
+</resources>
