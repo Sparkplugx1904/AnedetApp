@@ -16,3 +16,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "AnemiaDetector"
 include(":app")
+include(":opencv")
+project(":opencv").projectDir = file("OpenCV-android-sdk/sdk") 

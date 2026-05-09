@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-80:/values-en/values-en.xml",
+            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-73:/values-en/values-en.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Ananda\\Documents\\GitHub\\AnedetApp\\app\\src\\main\\res\\values-en\\strings.xml",

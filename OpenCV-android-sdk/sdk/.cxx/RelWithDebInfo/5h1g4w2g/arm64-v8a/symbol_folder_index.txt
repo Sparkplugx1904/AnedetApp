@@ -1,0 +1,1 @@
+C:\Users\Ananda\Documents\GitHub\AnedetApp\OpenCV-android-sdk\sdk\build\intermediates\cxx\RelWithDebInfo\5h1g4w2g\obj\arm64-v8a

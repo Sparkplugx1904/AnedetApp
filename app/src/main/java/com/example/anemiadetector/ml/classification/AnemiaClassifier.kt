@@ -32,7 +32,14 @@ class AnemiaClassifier @Inject constructor(
     )
 
     init {
-        val options = Interpreter.Options().apply { numThreads = 4 }
+        // Force disable GMS client - use bundled TFLite only
+        System.setProperty("tflite.disable_gms_client", "true")
+        
+        val options = Interpreter.Options().apply { 
+            numThreads = 4
+            // Explicitly disable NNAPI and GPU delegates
+            setUseNNAPI(false)
+        }
         interpreter = Interpreter(loadModelBuffer(context, MODEL_PATH), options)
         inputSize = interpreter.getInputTensor(0).shape()[1]
     }

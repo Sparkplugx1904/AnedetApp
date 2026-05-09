@@ -1,27 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-80:/values-large-v4/values-large-v4.xml",
+            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-73:/values-large-v4/values-large-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Ananda\\.gradle\\caches\\8.10.2\\transforms\\44c89260a0d239086accba4194ab7c3c\\transformed\\material-1.12.0\\res\\values-large-v4\\values-large-v4.xml",
-                    "from": {
-                        "startLines": "2,3,4,5",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "55,169,285,407",
-                        "endColumns": "113,115,121,133",
-                        "endOffsets": "164,280,402,536"
-                    },
-                    "to": {
-                        "startLines": "11,12,13,14",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "752,866,982,1104",
-                        "endColumns": "113,115,121,133",
-                        "endOffsets": "861,977,1099,1233"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Ananda\\.gradle\\caches\\8.10.2\\transforms\\9437648772b92ccba8192fa41c9391d1\\transformed\\appcompat-1.6.1\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\Ananda\\.gradle\\caches\\8.10.2\\transforms\\1a9d07133ddff6bd8f2f49af000f360b\\transformed\\appcompat-1.6.1\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",

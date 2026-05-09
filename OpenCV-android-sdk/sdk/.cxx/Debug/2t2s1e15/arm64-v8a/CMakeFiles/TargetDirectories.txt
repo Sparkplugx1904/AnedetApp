@@ -1,0 +1,3 @@
+C:/Users/Ananda/Documents/GitHub/AnedetApp/OpenCV-android-sdk/sdk/.cxx/Debug/2t2s1e15/arm64-v8a/CMakeFiles/opencv_jni_shared.dir
+C:/Users/Ananda/Documents/GitHub/AnedetApp/OpenCV-android-sdk/sdk/.cxx/Debug/2t2s1e15/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/Ananda/Documents/GitHub/AnedetApp/OpenCV-android-sdk/sdk/.cxx/Debug/2t2s1e15/arm64-v8a/CMakeFiles/rebuild_cache.dir

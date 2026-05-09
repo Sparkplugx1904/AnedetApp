@@ -67,6 +67,9 @@
         </service>
 
         <activity
+            android:name="androidx.activity.ComponentActivity"
+            android:exported="true" />
+        <activity
             android:name="androidx.compose.ui.tooling.PreviewActivity"
             android:exported="true" />
 

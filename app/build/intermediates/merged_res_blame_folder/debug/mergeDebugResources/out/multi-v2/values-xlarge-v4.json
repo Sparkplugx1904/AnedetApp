@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-80:/values-xlarge-v4/values-xlarge-v4.xml",
+            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-73:/values-xlarge-v4/values-xlarge-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Ananda\\.gradle\\caches\\8.10.2\\transforms\\9437648772b92ccba8192fa41c9391d1\\transformed\\appcompat-1.6.1\\res\\values-xlarge-v4\\values-xlarge-v4.xml",
+                    "source": "C:\\Users\\Ananda\\.gradle\\caches\\8.10.2\\transforms\\1a9d07133ddff6bd8f2f49af000f360b\\transformed\\appcompat-1.6.1\\res\\values-xlarge-v4\\values-xlarge-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7",
                         "startColumns": "4,4,4,4,4,4",

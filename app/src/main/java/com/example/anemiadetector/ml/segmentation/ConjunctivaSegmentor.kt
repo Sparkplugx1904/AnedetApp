@@ -32,13 +32,22 @@ class ConjunctivaSegmentor @Inject constructor(
         val confidence: Float
     )
 
-    private val interpreter: Interpreter = Interpreter(
-        loadModelBuffer(context, MODEL_PATH),
-        Interpreter.Options().apply { numThreads = 4 }
-    ).also {
-        for (i in 0 until it.outputTensorCount) {
-            Log.d("ModelInfo", "Output $i shape: ${it.getOutputTensor(i).shape().contentToString()}")
-            Log.d("ModelInfo", "Output $i dtype: ${it.getOutputTensor(i).dataType()}")
+    private val interpreter: Interpreter = run {
+        // Force disable GMS client - use bundled TFLite only
+        System.setProperty("tflite.disable_gms_client", "true")
+        
+        Interpreter(
+            loadModelBuffer(context, MODEL_PATH),
+            Interpreter.Options().apply { 
+                numThreads = 4
+                // Explicitly disable NNAPI and GPU delegates
+                setUseNNAPI(false)
+            }
+        ).also {
+            for (i in 0 until it.outputTensorCount) {
+                Log.d("ModelInfo", "Output $i shape: ${it.getOutputTensor(i).shape().contentToString()}")
+                Log.d("ModelInfo", "Output $i dtype: ${it.getOutputTensor(i).dataType()}")
+            }
         }
     }
 
