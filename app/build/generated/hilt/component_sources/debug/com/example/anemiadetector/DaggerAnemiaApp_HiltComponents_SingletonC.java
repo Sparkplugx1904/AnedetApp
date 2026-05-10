@@ -17,6 +17,7 @@ import com.example.anemiadetector.di.AppModule_ProvideInferenceRepositoryFactory
 import com.example.anemiadetector.di.DatabaseModule_ProvideAppDatabaseFactory;
 import com.example.anemiadetector.di.DatabaseModule_ProvideExaminationDaoFactory;
 import com.example.anemiadetector.domain.usecase.RunPreprocessingUseCase;
+import com.example.anemiadetector.domain.usecase.RunSegmentationPreprocessingUseCase;
 import com.example.anemiadetector.ml.classification.AnemiaClassifier;
 import com.example.anemiadetector.ml.segmentation.ConjunctivaSegmentor;
 import com.example.anemiadetector.ui.camera.CameraViewModel;
@@ -405,20 +406,20 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
+      static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
 
       static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
 
-      static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
+      static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
 
       @KeepFieldType
-      CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;
+      SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
 
       @KeepFieldType
       HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
 
       @KeepFieldType
-      SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
+      CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;
     }
   }
 
@@ -465,20 +466,20 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
-
       static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
 
       static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
 
-      @KeepFieldType
-      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
+      static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
 
       @KeepFieldType
       CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;
 
       @KeepFieldType
       SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
+
+      @KeepFieldType
+      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -593,6 +594,8 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     private Provider<RunPreprocessingUseCase> runPreprocessingUseCaseProvider;
 
+    private Provider<RunSegmentationPreprocessingUseCase> runSegmentationPreprocessingUseCaseProvider;
+
     private Provider<ConjunctivaSegmentor> provideConjunctivaSegmentorProvider;
 
     private Provider<AnemiaClassifier> provideAnemiaClassifierProvider;
@@ -618,12 +621,13 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
       this.runPreprocessingUseCaseProvider = DoubleCheck.provider(new SwitchingProvider<RunPreprocessingUseCase>(singletonCImpl, 2));
-      this.provideConjunctivaSegmentorProvider = DoubleCheck.provider(new SwitchingProvider<ConjunctivaSegmentor>(singletonCImpl, 3));
-      this.provideAnemiaClassifierProvider = DoubleCheck.provider(new SwitchingProvider<AnemiaClassifier>(singletonCImpl, 4));
+      this.runSegmentationPreprocessingUseCaseProvider = DoubleCheck.provider(new SwitchingProvider<RunSegmentationPreprocessingUseCase>(singletonCImpl, 3));
+      this.provideConjunctivaSegmentorProvider = DoubleCheck.provider(new SwitchingProvider<ConjunctivaSegmentor>(singletonCImpl, 4));
+      this.provideAnemiaClassifierProvider = DoubleCheck.provider(new SwitchingProvider<AnemiaClassifier>(singletonCImpl, 5));
       this.inferenceRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<InferenceRepositoryImpl>(singletonCImpl, 1));
       this.provideInferenceRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<InferenceRepository>(singletonCImpl, 0));
-      this.provideAppDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<AppDatabase>(singletonCImpl, 6));
-      this.examinationRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ExaminationRepository>(singletonCImpl, 5));
+      this.provideAppDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<AppDatabase>(singletonCImpl, 7));
+      this.examinationRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ExaminationRepository>(singletonCImpl, 6));
     }
 
     @Override
@@ -663,21 +667,24 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
           return (T) AppModule_ProvideInferenceRepositoryFactory.provideInferenceRepository(singletonCImpl.inferenceRepositoryImplProvider.get());
 
           case 1: // com.example.anemiadetector.data.repository.InferenceRepositoryImpl 
-          return (T) new InferenceRepositoryImpl(singletonCImpl.runPreprocessingUseCaseProvider.get(), singletonCImpl.provideConjunctivaSegmentorProvider.get(), singletonCImpl.provideAnemiaClassifierProvider.get());
+          return (T) new InferenceRepositoryImpl(singletonCImpl.runPreprocessingUseCaseProvider.get(), singletonCImpl.runSegmentationPreprocessingUseCaseProvider.get(), singletonCImpl.provideConjunctivaSegmentorProvider.get(), singletonCImpl.provideAnemiaClassifierProvider.get());
 
           case 2: // com.example.anemiadetector.domain.usecase.RunPreprocessingUseCase 
           return (T) new RunPreprocessingUseCase();
 
-          case 3: // com.example.anemiadetector.ml.segmentation.ConjunctivaSegmentor 
+          case 3: // com.example.anemiadetector.domain.usecase.RunSegmentationPreprocessingUseCase 
+          return (T) new RunSegmentationPreprocessingUseCase();
+
+          case 4: // com.example.anemiadetector.ml.segmentation.ConjunctivaSegmentor 
           return (T) AppModule_ProvideConjunctivaSegmentorFactory.provideConjunctivaSegmentor(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 4: // com.example.anemiadetector.ml.classification.AnemiaClassifier 
+          case 5: // com.example.anemiadetector.ml.classification.AnemiaClassifier 
           return (T) AppModule_ProvideAnemiaClassifierFactory.provideAnemiaClassifier(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 5: // com.example.anemiadetector.data.repository.ExaminationRepository 
+          case 6: // com.example.anemiadetector.data.repository.ExaminationRepository 
           return (T) new ExaminationRepository(singletonCImpl.examinationDao());
 
-          case 6: // com.example.anemiadetector.data.local.AppDatabase 
+          case 7: // com.example.anemiadetector.data.local.AppDatabase 
           return (T) DatabaseModule_ProvideAppDatabaseFactory.provideAppDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
           default: throw new AssertionError(id);

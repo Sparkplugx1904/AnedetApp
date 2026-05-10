@@ -17,10 +17,15 @@ import javax.inject.Singleton
 /**
  * Implementation of InferenceRepository
  * Thread-safe inference operations using Mutex
+ * 
+ * FIXED: Separate preprocessing paths for segmentation and classification
+ * - Segmentation: WB → Gamma → Bilateral → CLAHE (NO letterbox, segmentor resize to 320)
+ * - Classification: WB → Gamma → Letterbox 224 → Bilateral → CLAHE
  */
 @Singleton
 class InferenceRepositoryImpl @Inject constructor(
     private val preprocessingUseCase: RunPreprocessingUseCase,
+    private val segmentationPreprocessingUseCase: com.example.anemiadetector.domain.usecase.RunSegmentationPreprocessingUseCase,
     private val segmentor: ConjunctivaSegmentor,
     private val classifier: AnemiaClassifier
 ) : InferenceRepository {
@@ -30,7 +35,13 @@ class InferenceRepositoryImpl @Inject constructor(
     private val classificationMutex = Mutex()
 
     override suspend fun preprocess(bitmap: Bitmap): Bitmap = withContext(Dispatchers.Default) {
+        // For classification: full preprocessing with letterbox to 224
         preprocessingUseCase.execute(bitmap)
+    }
+    
+    override suspend fun preprocessForSegmentation(bitmap: Bitmap): Bitmap = withContext(Dispatchers.Default) {
+        // For segmentation: NO letterbox, segmentor will resize to 320 internally
+        segmentationPreprocessingUseCase.execute(bitmap)
     }
 
     override suspend fun segment(
@@ -39,6 +50,8 @@ class InferenceRepositoryImpl @Inject constructor(
         originalHeight: Int
     ): DetectionResult? = withContext(Dispatchers.Default) {
         segmentationMutex.withLock {
+            // CRITICAL: preprocessedBitmap here should be from segmentation preprocessing
+            // (no letterbox), not classification preprocessing (letterbox 224)
             val result = segmentor.segment(preprocessedBitmap, originalWidth, originalHeight)
             result?.let {
                 // Convert ConjunctivaSegmentor.SegmentationResult to DetectionResult

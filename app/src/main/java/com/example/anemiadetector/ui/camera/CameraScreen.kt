@@ -582,21 +582,45 @@ private fun PermissionDeniedScreen(
 
 /**
  * Extension function to convert ImageProxy to Bitmap
- * FIXED: CameraX RGBA_8888 format provides raw pixel bytes, not encoded image
- * BitmapFactory.decodeByteArray() only works with JPEG/PNG encoded data
+ * FIXED: Handle rowStride padding properly for real Android devices
+ * 
+ * CameraX RGBA_8888 format provides raw pixel bytes with potential row padding.
+ * On real devices, planes[0].rowStride is often > width * 4 due to GPU alignment.
+ * We must copy row-by-row, skipping padding bytes at the end of each row.
  */
 private fun ImageProxy.toBitmap(): android.graphics.Bitmap {
-    // Create bitmap with correct dimensions and config
-    val bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888)
+    val plane = planes[0]
+    val rowStride = plane.rowStride      // bytes per row including padding
+    val pixelStride = plane.pixelStride  // bytes per pixel (4 for RGBA_8888)
+    val buffer = plane.buffer
     
-    // Get buffer from first plane (RGBA_8888 has only one plane)
-    val buffer = planes[0].buffer
+    // Fast path: no padding, direct copy
+    if (rowStride == width * pixelStride) {
+        val bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888)
+        buffer.rewind()
+        bitmap.copyPixelsFromBuffer(buffer)
+        android.util.Log.d("ImageProxy", "Fast path: no padding, rowStride=$rowStride")
+        return bitmap
+    }
     
-    // Rewind buffer to start position
+    // Slow path: has padding — copy row by row, skip padding
+    android.util.Log.d("ImageProxy", "Slow path: rowStride=$rowStride, expected=${width * pixelStride}, padding=${rowStride - width * pixelStride} bytes/row")
+    
+    val cleanBuffer = java.nio.ByteBuffer.allocateDirect(width * height * pixelStride)
     buffer.rewind()
     
-    // Copy raw pixel data directly to bitmap
-    bitmap.copyPixelsFromBuffer(buffer)
+    for (row in 0 until height) {
+        // Set position to start of this row (including offset from previous row padding)
+        buffer.position(row * rowStride)
+        // Copy only valid pixel bytes (without padding at end of row)
+        val rowData = ByteArray(width * pixelStride)
+        buffer.get(rowData)
+        cleanBuffer.put(rowData)
+    }
+    cleanBuffer.rewind()
+    
+    val bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888)
+    bitmap.copyPixelsFromBuffer(cleanBuffer)
     
     return bitmap
 }

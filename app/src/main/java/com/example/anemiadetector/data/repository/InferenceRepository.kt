@@ -6,18 +6,27 @@ import com.example.anemiadetector.data.model.DetectionResult
 
 /**
  * Repository interface for inference operations
+ * 
+ * FIXED: Separate preprocessing for segmentation and classification
  */
 interface InferenceRepository {
     /**
-     * Run full preprocessing pipeline on input bitmap
+     * Run full preprocessing pipeline for CLASSIFICATION
      * @param bitmap Input bitmap from camera
-     * @return Preprocessed bitmap (224x224, CLAHE enhanced)
+     * @return Preprocessed bitmap (224x224 letterboxed, CLAHE enhanced)
      */
     suspend fun preprocess(bitmap: Bitmap): Bitmap
+    
+    /**
+     * Run preprocessing pipeline for SEGMENTATION (no letterbox)
+     * @param bitmap Input bitmap from camera
+     * @return Preprocessed bitmap (original size, CLAHE enhanced, no letterbox)
+     */
+    suspend fun preprocessForSegmentation(bitmap: Bitmap): Bitmap
 
     /**
      * Run conjunctiva segmentation
-     * @param preprocessedBitmap Preprocessed bitmap (224x224)
+     * @param preprocessedBitmap Preprocessed bitmap (from preprocessForSegmentation)
      * @param originalWidth Original frame width
      * @param originalHeight Original frame height
      * @return DetectionResult or null if no detection

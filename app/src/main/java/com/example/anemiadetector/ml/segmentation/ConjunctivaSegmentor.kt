@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.PointF
 import android.graphics.RectF
 import android.util.Log
+import com.example.anemiadetector.ml.preprocessor.LetterboxResizer
 import com.example.anemiadetector.utils.loadModelBuffer
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.tensorflow.lite.DataType
@@ -95,7 +96,9 @@ class ConjunctivaSegmentor @Inject constructor(
     }
 
     fun segment(preprocessedBitmap: Bitmap, originalWidth: Int, originalHeight: Int): SegmentationResult? {
-        val resized = Bitmap.createScaledBitmap(preprocessedBitmap, INPUT_SIZE, INPUT_SIZE, true)
+        // CRITICAL: Use letterbox resize, NOT stretch
+        // This maintains aspect ratio and adds black padding
+        val resized = LetterboxResizer.resize(preprocessedBitmap, INPUT_SIZE)
         // FP16 model selalu pakai float buffer (input FLOAT32)
         val input = toFloatBuffer(resized)
 
@@ -165,6 +168,8 @@ class ConjunctivaSegmentor @Inject constructor(
     /**
      * Parse model output [1, 300, 38] untuk extract detection
      * Output format: [x1, y1, x2, y2, confidence, class_id, mask_coeffs(32)]
+     * 
+     * FIXED: Apply inverse letterbox transform to coordinates
      */
     private fun parseOutput(
         output: Array<Array<FloatArray>>,
@@ -175,11 +180,16 @@ class ConjunctivaSegmentor @Inject constructor(
     ): SegmentationResult? {
         val detections = output[0]  // [300, 38]
         
+        // Calculate letterbox parameters for inverse transform
+        val letterboxParams = calculateLetterboxParams(originalWidth, originalHeight, INPUT_SIZE)
+        
+        Log.d("ConjunctivaSegmentor", "Letterbox params: scale=${letterboxParams.scale}, xOff=${letterboxParams.xOffset}, yOff=${letterboxParams.yOffset}")
+        
         // Find best detection above threshold
         for (i in 0 until 300) {
             val detection = detections[i]
             
-            // Extract data
+            // Extract data (normalized coordinates [0,1])
             val x1 = detection[0]
             val y1 = detection[1]
             val x2 = detection[2]
@@ -187,23 +197,34 @@ class ConjunctivaSegmentor @Inject constructor(
             val confidence = detection[4]
             val classId = detection[5].toInt()
             
+            // Log first few detections for debugging
+            if (i < 5) {
+                Log.d("SegDebug", "Detection $i: conf=$confidence, x1=$x1, y1=$y1, x2=$x2, y2=$y2, class=$classId")
+            }
+            
             // Filter by confidence threshold
             if (confidence < CONF_THRESHOLD) {
                 // Detections are sorted by confidence, so we can break early
+                Log.d("ConjunctivaSegmentor", "Stopped at detection $i, confidence $confidence < $CONF_THRESHOLD")
                 break
             }
             
             // Filter by class (0 = conjunctiva)
             if (classId != 0) continue
             
-            // Denormalize coordinates from [0-1] to original frame size
-            val x1Denorm = x1 * originalWidth
-            val y1Denorm = y1 * originalHeight
-            val x2Denorm = x2 * originalWidth
-            val y2Denorm = y2 * originalHeight
+            // FIXED: Apply inverse letterbox transform to get correct frame coordinates
+            val topLeft = modelToFrame(x1, y1, letterboxParams, INPUT_SIZE, originalWidth, originalHeight)
+            val bottomRight = modelToFrame(x2, y2, letterboxParams, INPUT_SIZE, originalWidth, originalHeight)
+            
+            val x1Denorm = topLeft.x
+            val y1Denorm = topLeft.y
+            val x2Denorm = bottomRight.x
+            val y2Denorm = bottomRight.y
             
             // Create bounding box
             val bbox = RectF(x1Denorm, y1Denorm, x2Denorm, y2Denorm)
+            
+            Log.d("ConjunctivaSegmentor", "Bbox after inverse letterbox: $bbox")
             
             // Extract mask coefficients (32 values from index 6-37)
             val maskCoeffs = FloatArray(32) { idx -> detection[6 + idx] }
@@ -215,6 +236,7 @@ class ConjunctivaSegmentor @Inject constructor(
                         maskCoeffs,
                         protoMasksData,
                         bbox,
+                        letterboxParams,
                         originalWidth,
                         originalHeight
                     )
@@ -257,11 +279,13 @@ class ConjunctivaSegmentor @Inject constructor(
      * Decode mask coefficients to polygon using proto masks
      * Implements: mask = sigmoid(proto @ coeffs.T)
      * FIXED: Handle both [1,32,H,W] and [1,H,W,32] formats correctly
+     * FIXED: Apply inverse letterbox transform to contour coordinates
      */
     private fun decodeMaskToPolygon(
         maskCoeffs: FloatArray,
         protoMasksData: ProtoMasksData,
         bbox: RectF,
+        letterboxParams: LetterboxParams,
         originalWidth: Int,
         originalHeight: Int
     ): List<PointF> {
@@ -324,14 +348,25 @@ class ConjunctivaSegmentor @Inject constructor(
         }
         
         // Scale bbox to proto mask coordinates
+        // bbox is in original frame coordinates, need to convert to proto space
+        // Step 1: Frame → normalized [0,1]
+        // Step 2: Normalized → INPUT_SIZE space (with letterbox)
+        // Step 3: INPUT_SIZE → proto space
         val scaleX = protoWidth.toFloat() / INPUT_SIZE
         val scaleY = protoHeight.toFloat() / INPUT_SIZE
         
+        // Convert bbox corners from frame to model normalized coordinates
+        val bboxNormX1 = (bbox.left * letterboxParams.scale + letterboxParams.xOffset) / INPUT_SIZE
+        val bboxNormY1 = (bbox.top * letterboxParams.scale + letterboxParams.yOffset) / INPUT_SIZE
+        val bboxNormX2 = (bbox.right * letterboxParams.scale + letterboxParams.xOffset) / INPUT_SIZE
+        val bboxNormY2 = (bbox.bottom * letterboxParams.scale + letterboxParams.yOffset) / INPUT_SIZE
+        
+        // Scale to proto space
         val bboxInProto = RectF(
-            (bbox.left / originalWidth * INPUT_SIZE * scaleX).coerceIn(0f, protoWidth.toFloat()),
-            (bbox.top / originalHeight * INPUT_SIZE * scaleY).coerceIn(0f, protoHeight.toFloat()),
-            (bbox.right / originalWidth * INPUT_SIZE * scaleX).coerceIn(0f, protoWidth.toFloat()),
-            (bbox.bottom / originalHeight * INPUT_SIZE * scaleY).coerceIn(0f, protoHeight.toFloat())
+            (bboxNormX1 * INPUT_SIZE * scaleX).coerceIn(0f, protoWidth.toFloat()),
+            (bboxNormY1 * INPUT_SIZE * scaleY).coerceIn(0f, protoHeight.toFloat()),
+            (bboxNormX2 * INPUT_SIZE * scaleX).coerceIn(0f, protoWidth.toFloat()),
+            (bboxNormY2 * INPUT_SIZE * scaleY).coerceIn(0f, protoHeight.toFloat())
         )
         
         // Extract contour from binary mask within bbox
@@ -347,12 +382,15 @@ class ConjunctivaSegmentor @Inject constructor(
             return createRectanglePolygon(bbox.left, bbox.top, bbox.right, bbox.bottom)
         }
         
-        // Scale contour points back to original frame coordinates
+        // FIXED: Scale contour points back to original frame coordinates
+        // using inverse letterbox transform
         val scaledContour = contourPoints.map { pt ->
-            PointF(
-                pt.x / scaleX / INPUT_SIZE * originalWidth,
-                pt.y / scaleY / INPUT_SIZE * originalHeight
-            )
+            // pt is in proto mask coordinates (e.g., 0-160)
+            // Convert to normalized model coordinates [0,1]
+            val xNorm = pt.x / protoWidth
+            val yNorm = pt.y / protoHeight
+            // Apply inverse letterbox to get original frame coordinates
+            modelToFrame(xNorm, yNorm, letterboxParams, INPUT_SIZE, originalWidth, originalHeight)
         }
         
         // Apply adaptive polygon reduction (6-15 points)
@@ -372,6 +410,64 @@ class ConjunctivaSegmentor @Inject constructor(
      */
     private fun sigmoid(x: Float): Float {
         return 1f / (1f + kotlin.math.exp(-x))
+    }
+    
+    /**
+     * Helper data class for tuple return
+     */
+    private data class LetterboxParams(
+        val scale: Float,
+        val xOffset: Float,
+        val yOffset: Float,
+        val scaledWidth: Int,
+        val scaledHeight: Int
+    )
+    
+    /**
+     * Calculate letterbox parameters for inverse transform
+     * CRITICAL: Must match LetterboxResizer behavior exactly
+     */
+    private fun calculateLetterboxParams(
+        originalWidth: Int,
+        originalHeight: Int,
+        targetSize: Int
+    ): LetterboxParams {
+        val scale = targetSize.toFloat() / maxOf(originalWidth, originalHeight)
+        val scaledWidth = (originalWidth * scale).toInt()
+        val scaledHeight = (originalHeight * scale).toInt()
+        val xOffset = (targetSize - scaledWidth) / 2f
+        val yOffset = (targetSize - scaledHeight) / 2f
+        
+        return LetterboxParams(scale, xOffset, yOffset, scaledWidth, scaledHeight)
+    }
+    
+    /**
+     * Convert model normalized coordinates [0,1] to original frame coordinates
+     * with inverse letterbox transform
+     * 
+     * FIXED: Account for letterbox padding offset
+     */
+    private fun modelToFrame(
+        xNorm: Float,
+        yNorm: Float,
+        params: LetterboxParams,
+        targetSize: Int,
+        originalWidth: Int,
+        originalHeight: Int
+    ): PointF {
+        // 1. Model norm [0,1] → target size space (e.g., 320x320) including padding
+        val xTarget = xNorm * targetSize
+        val yTarget = yNorm * targetSize
+        
+        // 2. Target space → original frame (inverse letterbox: subtract offset, divide by scale)
+        val xOrig = (xTarget - params.xOffset) / params.scale
+        val yOrig = (yTarget - params.yOffset) / params.scale
+        
+        // 3. Clamp to valid range
+        return PointF(
+            xOrig.coerceIn(0f, originalWidth.toFloat()),
+            yOrig.coerceIn(0f, originalHeight.toFloat())
+        )
     }
     
     /**

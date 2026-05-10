@@ -56,7 +56,6 @@ class CameraViewModel @Inject constructor(
 
     // Frame buffer
     private var lastFrameBitmap: Bitmap? = null
-    private var lastPreprocessedBitmap: Bitmap? = null
     private var lastDetectionResult: DetectionResult? = null
     
     // Result bitmap for display
@@ -85,6 +84,8 @@ class CameraViewModel @Inject constructor(
     /**
      * Process frame for live segmentation (default mode)
      * Called from ImageAnalysis analyzer
+     * 
+     * FIXED: Use segmentation preprocessing (no letterbox), not classification preprocessing
      */
     fun processFrameForSegmentation(bitmap: Bitmap) {
         val now = SystemClock.elapsedRealtime()
@@ -100,30 +101,37 @@ class CameraViewModel @Inject constructor(
         // Camera analyzer may recycle bitmap after this function returns
         val frameCopy = bitmap.copy(Bitmap.Config.ARGB_8888, false)
         
+        // Debug: Log frame info
+        android.util.Log.d("FrameDebug", "Frame size: ${frameCopy.width}×${frameCopy.height}, recycled: ${frameCopy.isRecycled}")
+        
         // Store frame for capture
         lastFrameBitmap?.recycle()
         lastFrameBitmap = frameCopy.copy(Bitmap.Config.ARGB_8888, false)
 
         viewModelScope.launch {
             try {
-                // Preprocess - use frameCopy instead of bitmap
-                val preprocessed = inferenceRepository.preprocess(frameCopy)
-                lastPreprocessedBitmap?.recycle()
-                lastPreprocessedBitmap = preprocessed.copy(Bitmap.Config.ARGB_8888, false)
-
+                // FIXED: Use segmentation preprocessing (no letterbox)
+                // Segmentor will resize internally from original size to 320x320
+                val preprocessedForSeg = inferenceRepository.preprocessForSegmentation(frameCopy)
+                
                 // Segment
                 val detection = inferenceRepository.segment(
-                    preprocessed,
+                    preprocessedForSeg,
                     FRAME_WIDTH,
                     FRAME_HEIGHT
                 )
+                
+                // Cleanup segmentation preprocessed
+                preprocessedForSeg.recycle()
 
                 if (detection != null) {
                     lastDetectionResult = detection
                     _inferenceState.value = InferenceState.Success(detection, null)
+                    android.util.Log.d("RepoDebug", "Segmentation success: bbox=${detection.boundingBox}, conf=${detection.confidence}")
                 } else {
                     lastDetectionResult = null
                     _inferenceState.value = InferenceState.NoDetection()
+                    android.util.Log.d("RepoDebug", "Segmentation result: null (no detection)")
                 }
                 
                 // Cleanup
@@ -134,6 +142,7 @@ class CameraViewModel @Inject constructor(
                     "Segmentation failed: ${e.message}",
                     e
                 )
+                android.util.Log.e("RepoDebug", "Segmentation error", e)
             }
         }
     }
@@ -141,6 +150,8 @@ class CameraViewModel @Inject constructor(
     /**
      * Capture and classify (Single Capture mode)
      * Uses last buffered frame
+     * 
+     * FIXED: Use correct preprocessing for each stage
      */
     fun captureAndClassify() {
         val frame = lastFrameBitmap ?: run {
@@ -152,33 +163,40 @@ class CameraViewModel @Inject constructor(
             try {
                 _inferenceState.value = InferenceState.Processing
 
-                // Use cached preprocessed bitmap if available
-                val preprocessed = lastPreprocessedBitmap?.copy(Bitmap.Config.ARGB_8888, false)
-                    ?: inferenceRepository.preprocess(frame)
+                // Step 1: Preprocess for segmentation (no letterbox)
+                val preprocessedForSeg = inferenceRepository.preprocessForSegmentation(frame)
 
-                // Segment
+                // Step 2: Segment
                 val detection = inferenceRepository.segment(
-                    preprocessed,
+                    preprocessedForSeg,
                     FRAME_WIDTH,
                     FRAME_HEIGHT
                 ) ?: run {
                     _inferenceState.value = InferenceState.NoDetection("Konjungtiva tidak terdeteksi")
-                    preprocessed.recycle()
+                    preprocessedForSeg.recycle()
                     return@launch
                 }
+                
+                // Cleanup segmentation preprocessed
+                preprocessedForSeg.recycle()
 
-                // Crop conjunctiva from preprocessed bitmap
-                val crop = cropConjunctiva(preprocessed, detection.boundingBox, detection.polygon)
+                // Step 3: Preprocess for classification (with letterbox 224)
+                val preprocessedForClass = inferenceRepository.preprocess(frame)
+                
+                // Step 4: Crop conjunctiva from classification preprocessed bitmap
+                val crop = cropConjunctiva(preprocessedForClass, detection.boundingBox, detection.polygon)
+                
+                // Cleanup classification preprocessed
+                preprocessedForClass.recycle()
                 
                 // Validate crop
                 if (crop.width <= 0 || crop.height <= 0 || crop.byteCount == 0) {
                     _inferenceState.value = InferenceState.NoDetection("Area konjungtiva terlalu kecil")
-                    preprocessed.recycle()
                     crop.recycle()
                     return@launch
                 }
 
-                // Classify
+                // Step 5: Classify
                 val classification = inferenceRepository.classify(crop)
                 
                 // Store detection result
@@ -192,7 +210,6 @@ class CameraViewModel @Inject constructor(
 
                 // Cleanup - recycle setelah classify selesai
                 crop.recycle()
-                preprocessed.recycle()
 
             } catch (e: Exception) {
                 _inferenceState.value = InferenceState.Error(
@@ -250,34 +267,43 @@ class CameraViewModel @Inject constructor(
     /**
      * Run full pipeline (preprocessing + segmentation + classification)
      * FIXED: Update _resultBitmap for live inference mode
+     * FIXED: Use correct preprocessing for each stage
      */
     private suspend fun runFullPipeline(frame: Bitmap) {
         try {
-            // Preprocess
-            val preprocessed = inferenceRepository.preprocess(frame)
+            // Step 1: Preprocess for segmentation (no letterbox)
+            val preprocessedForSeg = inferenceRepository.preprocessForSegmentation(frame)
 
-            // Segment
+            // Step 2: Segment
             val detection = inferenceRepository.segment(
-                preprocessed,
+                preprocessedForSeg,
                 FRAME_WIDTH,
                 FRAME_HEIGHT
             ) ?: run {
                 _inferenceState.value = InferenceState.NoDetection()
-                preprocessed.recycle()
+                preprocessedForSeg.recycle()
                 return
             }
+            
+            // Cleanup segmentation preprocessed
+            preprocessedForSeg.recycle()
 
-            // Crop
-            val crop = cropConjunctiva(preprocessed, detection.boundingBox, detection.polygon)
+            // Step 3: Preprocess for classification (with letterbox 224)
+            val preprocessedForClass = inferenceRepository.preprocess(frame)
+            
+            // Step 4: Crop
+            val crop = cropConjunctiva(preprocessedForClass, detection.boundingBox, detection.polygon)
+            
+            // Cleanup classification preprocessed
+            preprocessedForClass.recycle()
             
             if (crop.width <= 0 || crop.height <= 0) {
                 _inferenceState.value = InferenceState.NoDetection("Area terlalu kecil")
-                preprocessed.recycle()
                 crop.recycle()
                 return
             }
 
-            // Classify
+            // Step 5: Classify
             val classification = inferenceRepository.classify(crop)
             
             // Store detection result
@@ -290,7 +316,6 @@ class CameraViewModel @Inject constructor(
             _inferenceState.value = InferenceState.Success(detection, classification)
 
             // Cleanup
-            preprocessed.recycle()
             crop.recycle()
 
         } catch (e: Exception) {
@@ -301,39 +326,52 @@ class CameraViewModel @Inject constructor(
     /**
      * Crop conjunctiva region from preprocessed bitmap
      * FIXED: Account for letterbox offset when scaling coordinates
+     * 
+     * The preprocessed bitmap is 224x224 with letterbox padding.
+     * Original frame 1280x720 is scaled and centered in 224x224:
+     * - scale = 224 / 1280 = 0.175
+     * - newHeight = 720 * 0.175 = 126px
+     * - yOffset = (224 - 126) / 2 = 49px (black padding top/bottom)
+     * 
+     * Bbox coordinates from segmentor are already in original frame space (1280x720).
+     * We need to map them to the letterboxed 224x224 space.
      */
     private fun cropConjunctiva(
         preprocessed: Bitmap,
         bbox: RectF,
         polygon: List<android.graphics.PointF>
     ): Bitmap {
-        // Letterbox resize calculation
-        // Original frame: 1280x720
-        // Target size: 224x224
-        val scale = 224f / FRAME_WIDTH  // = 0.175
-        val newHeight = (FRAME_HEIGHT * scale).toInt()  // = 126px
-        val yOffset = (224 - newHeight) / 2  // = 49px (black padding top/bottom)
+        // Letterbox parameters (must match LetterboxResizer)
+        val targetSize = 224f
+        val scale = targetSize / maxOf(FRAME_WIDTH, FRAME_HEIGHT)  // 224/1280 = 0.175
+        val scaledWidth = (FRAME_WIDTH * scale).toInt()   // 224
+        val scaledHeight = (FRAME_HEIGHT * scale).toInt() // 126
+        val xOffset = (targetSize - scaledWidth) / 2f     // 0
+        val yOffset = (targetSize - scaledHeight) / 2f    // 49
         
-        // Scale bbox from frame coordinates to preprocessed bitmap coordinates
-        // Account for letterbox offset
-        val scaleX = 224f / FRAME_WIDTH
-        val scaleY = newHeight.toFloat() / FRAME_HEIGHT  // Scale to actual content height
+        android.util.Log.d("CropDebug", "Letterbox: scale=$scale, xOff=$xOffset, yOff=$yOffset")
+        android.util.Log.d("CropDebug", "Bbox in frame space: $bbox")
         
+        // Map bbox from original frame coordinates to letterboxed 224x224 coordinates
         val scaledBbox = RectF(
-            bbox.left * scaleX,
-            bbox.top * scaleY + yOffset,  // Add y offset for letterbox padding
-            bbox.right * scaleX,
-            bbox.bottom * scaleY + yOffset
+            bbox.left * scale + xOffset,
+            bbox.top * scale + yOffset,
+            bbox.right * scale + xOffset,
+            bbox.bottom * scale + yOffset
         )
+        
+        android.util.Log.d("CropDebug", "Bbox in 224x224 space: $scaledBbox")
 
         // Ensure bbox is within bounds
-        scaledBbox.left = scaledBbox.left.coerceIn(0f, 224f)
-        scaledBbox.top = scaledBbox.top.coerceIn(0f, 224f)
-        scaledBbox.right = scaledBbox.right.coerceIn(0f, 224f)
-        scaledBbox.bottom = scaledBbox.bottom.coerceIn(0f, 224f)
+        scaledBbox.left = scaledBbox.left.coerceIn(0f, targetSize)
+        scaledBbox.top = scaledBbox.top.coerceIn(0f, targetSize)
+        scaledBbox.right = scaledBbox.right.coerceIn(0f, targetSize)
+        scaledBbox.bottom = scaledBbox.bottom.coerceIn(0f, targetSize)
 
         val width = (scaledBbox.right - scaledBbox.left).toInt().coerceAtLeast(1)
         val height = (scaledBbox.bottom - scaledBbox.top).toInt().coerceAtLeast(1)
+        
+        android.util.Log.d("CropDebug", "Crop size: ${width}x$height")
 
         // Create bitmap crop (shares pixel buffer with parent)
         val tempCrop = Bitmap.createBitmap(
@@ -460,7 +498,6 @@ class CameraViewModel @Inject constructor(
         super.onCleared()
         stopLiveInference()
         lastFrameBitmap?.recycle()
-        lastPreprocessedBitmap?.recycle()
         // Don't call inferenceRepository.release() - it's a Singleton
     }
 }
