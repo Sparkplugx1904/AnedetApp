@@ -73,6 +73,7 @@
     <!-- Permissions -->
     <string name="permission_camera_title">Izin Kamera Diperlukan</string>
     <string name="permission_camera_desc">Aplikasi memerlukan akses kamera untuk mendeteksi anemia melalui konjungtiva mata.</string>
+    <string name="permission_request">Izinkan Akses Kamera</string>
     <string name="permission_open_settings">Buka Pengaturan</string>
     <string name="permission_denied">Izin ditolak</string>
     

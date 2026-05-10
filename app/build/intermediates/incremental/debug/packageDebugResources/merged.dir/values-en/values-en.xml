@@ -50,6 +50,7 @@
     <string name="permission_camera_title">Camera Permission Required</string>
     <string name="permission_denied">Permission denied</string>
     <string name="permission_open_settings">Open Settings</string>
+    <string name="permission_request">Allow Camera Access</string>
     <string name="processing">Processing…</string>
     <string name="result_anemia">Anemia</string>
     <string name="result_non_anemia">Non-Anemia</string>

@@ -90,14 +90,18 @@ class CameraViewModel @Inject constructor(
         
         lastSegInferenceMs = now
         
+        // CRITICAL: Copy bitmap BEFORE launching coroutine
+        // Camera analyzer may recycle bitmap after this function returns
+        val frameCopy = bitmap.copy(Bitmap.Config.ARGB_8888, false)
+        
         // Store frame for capture
         lastFrameBitmap?.recycle()
-        lastFrameBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false)
+        lastFrameBitmap = frameCopy.copy(Bitmap.Config.ARGB_8888, false)
 
         viewModelScope.launch {
             try {
-                // Preprocess
-                val preprocessed = inferenceRepository.preprocess(bitmap)
+                // Preprocess - use frameCopy instead of bitmap
+                val preprocessed = inferenceRepository.preprocess(frameCopy)
                 lastPreprocessedBitmap?.recycle()
                 lastPreprocessedBitmap = preprocessed.copy(Bitmap.Config.ARGB_8888, false)
 
@@ -113,7 +117,11 @@ class CameraViewModel @Inject constructor(
                 } else {
                     _inferenceState.value = InferenceState.NoDetection()
                 }
+                
+                // Cleanup
+                frameCopy.recycle()
             } catch (e: Exception) {
+                frameCopy.recycle()
                 _inferenceState.value = InferenceState.Error(
                     "Segmentation failed: ${e.message}",
                     e
@@ -167,9 +175,9 @@ class CameraViewModel @Inject constructor(
 
                 _inferenceState.value = InferenceState.Success(detection, classification)
 
-                // Cleanup
-                preprocessed.recycle()
+                // Cleanup - recycle setelah classify selesai
                 crop.recycle()
+                preprocessed.recycle()
 
             } catch (e: Exception) {
                 _inferenceState.value = InferenceState.Error(
@@ -295,13 +303,20 @@ class CameraViewModel @Inject constructor(
         val width = (scaledBbox.right - scaledBbox.left).toInt().coerceAtLeast(1)
         val height = (scaledBbox.bottom - scaledBbox.top).toInt().coerceAtLeast(1)
 
-        return Bitmap.createBitmap(
+        // Create bitmap crop (shares pixel buffer with parent)
+        val tempCrop = Bitmap.createBitmap(
             preprocessed,
             scaledBbox.left.toInt(),
             scaledBbox.top.toInt(),
             width,
             height
         )
+        
+        // Make independent copy so we can recycle preprocessed safely
+        val crop = tempCrop.copy(Bitmap.Config.ARGB_8888, false)
+        tempCrop.recycle()
+        
+        return crop
     }
 
     /**
@@ -337,12 +352,14 @@ class CameraViewModel @Inject constructor(
 
     /**
      * Cleanup resources
+     * Note: Don't release inferenceRepository here because it's a Singleton
+     * and will be reused when screen is recreated
      */
     override fun onCleared() {
         super.onCleared()
         stopLiveInference()
         lastFrameBitmap?.recycle()
         lastPreprocessedBitmap?.recycle()
-        inferenceRepository.release()
+        // Don't call inferenceRepository.release() - it's a Singleton
     }
 }

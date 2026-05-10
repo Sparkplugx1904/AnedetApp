@@ -55,6 +55,7 @@ string permission_camera_desc
 string permission_camera_title
 string permission_denied
 string permission_open_settings
+string permission_request
 string processing
 string result_anemia
 string result_non_anemia

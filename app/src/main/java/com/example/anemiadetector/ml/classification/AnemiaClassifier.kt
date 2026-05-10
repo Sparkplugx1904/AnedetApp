@@ -35,9 +35,12 @@ class AnemiaClassifier @Inject constructor(
         // Force disable GMS client - use bundled TFLite only
         System.setProperty("tflite.disable_gms_client", "true")
         
+        // Model FLOAT32 classification bisa pakai GPU delegate untuk performa lebih baik
+        // Berbeda dengan segmentation INT8 yang harus CPU-only
         val options = Interpreter.Options().apply { 
-            numThreads = 4
-            // Explicitly disable NNAPI and GPU delegates
+            setNumThreads(4)
+            // FLOAT32 model compatible dengan NNAPI/GPU delegate
+            // Tapi untuk konsistensi dan stabilitas, kita pakai CPU-only dulu
             setUseNNAPI(false)
         }
         interpreter = Interpreter(loadModelBuffer(context, MODEL_PATH), options)

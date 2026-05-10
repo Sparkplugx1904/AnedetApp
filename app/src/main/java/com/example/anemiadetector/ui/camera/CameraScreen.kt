@@ -28,8 +28,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.anemiadetector.R
 import com.example.anemiadetector.data.model.InferenceState
 import com.example.anemiadetector.utils.PolygonUtils
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import androidx.camera.core.ImageProxy
@@ -42,7 +40,6 @@ import android.util.Log
  * 2. Single Capture
  * 3. Live Inference
  */
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(
     onNavigateToHistory: () -> Unit,
@@ -55,19 +52,21 @@ fun CameraScreen(
 
     Log.d("CameraScreen", "CameraScreen composing...")
 
-    // Permissions
-    val permissionsState = rememberMultiplePermissionsState(
-        permissions = listOf(
-            Manifest.permission.CAMERA,
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                Manifest.permission.READ_MEDIA_IMAGES
-            } else {
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            }
-        )
-    )
+    // Manual permission state (more reliable than Accompanist)
+    var hasPermissions by remember { 
+        mutableStateOf(com.example.anemiadetector.utils.PermissionUtils.hasAllPermissions(context))
+    }
+    
+    // Permission launcher
+    val permissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        contract = androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        Log.d("CameraScreen", "Permission result: $permissions")
+        hasPermissions = permissions.values.all { it }
+        Log.d("CameraScreen", "hasPermissions updated to: $hasPermissions")
+    }
 
-    Log.d("CameraScreen", "Permissions granted: ${permissionsState.allPermissionsGranted}")
+    Log.d("CameraScreen", "hasPermissions: $hasPermissions")
 
     // State
     val inferenceState by viewModel.inferenceState.collectAsState()
@@ -83,8 +82,25 @@ fun CameraScreen(
 
     // Request permissions on first composition
     LaunchedEffect(Unit) {
-        if (!permissionsState.allPermissionsGranted) {
-            permissionsState.launchMultiplePermissionRequest()
+        if (!hasPermissions) {
+            val permissions = com.example.anemiadetector.utils.PermissionUtils.REQUIRED_PERMISSIONS
+            permissionLauncher.launch(permissions)
+        }
+    }
+
+    // Re-check permissions when app resumes (user returns from Settings)
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                Log.d("CameraScreen", "App resumed, re-checking permissions")
+                val newPermissionState = com.example.anemiadetector.utils.PermissionUtils.hasAllPermissions(context)
+                Log.d("CameraScreen", "Manual check result: $newPermissionState")
+                hasPermissions = newPermissionState
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -119,7 +135,7 @@ fun CameraScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            if (permissionsState.allPermissionsGranted) {
+            if (hasPermissions) {
                 // Camera preview
                 CameraPreview(
                     cameraSelector = cameraSelector,
@@ -210,7 +226,8 @@ fun CameraScreen(
                 // Permission denied screen
                 PermissionDeniedScreen(
                     onRequestPermission = {
-                        permissionsState.launchMultiplePermissionRequest()
+                        val permissions = com.example.anemiadetector.utils.PermissionUtils.REQUIRED_PERMISSIONS
+                        permissionLauncher.launch(permissions)
                     },
                     modifier = Modifier.fillMaxSize()
                 )
@@ -460,6 +477,8 @@ private fun PermissionDeniedScreen(
     onRequestPermission: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -476,16 +495,37 @@ private fun PermissionDeniedScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.permission_camera_title),
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(R.string.permission_camera_desc),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = onRequestPermission) {
+        
+        // Try request permission first
+        Button(
+            onClick = onRequestPermission,
+            modifier = Modifier.fillMaxWidth(0.8f)
+        ) {
+            Text(stringResource(R.string.permission_request))
+        }
+        
+        Spacer(modifier = Modifier.height(12.dp))
+        
+        // Open settings if permission was permanently denied
+        OutlinedButton(
+            onClick = {
+                context.startActivity(
+                    com.example.anemiadetector.utils.PermissionUtils.createAppSettingsIntent(context)
+                )
+            },
+            modifier = Modifier.fillMaxWidth(0.8f)
+        ) {
             Text(stringResource(R.string.permission_open_settings))
         }
     }

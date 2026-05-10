@@ -52,6 +52,7 @@
     <string name="permission_camera_title">Izin Kamera Diperlukan</string>
     <string name="permission_denied">Izin ditolak</string>
     <string name="permission_open_settings">Buka Pengaturan</string>
+    <string name="permission_request">Izinkan Akses Kamera</string>
     <string name="processing">Memproses…</string>
     <string name="result_anemia">Anemia</string>
     <string name="result_non_anemia">Non-Anemia</string>

@@ -73,6 +73,7 @@
     <!-- Permissions -->
     <string name="permission_camera_title">Camera Permission Required</string>
     <string name="permission_camera_desc">The app requires camera access to detect anemia through conjunctiva.</string>
+    <string name="permission_request">Allow Camera Access</string>
     <string name="permission_open_settings">Open Settings</string>
     <string name="permission_denied">Permission denied</string>
     
