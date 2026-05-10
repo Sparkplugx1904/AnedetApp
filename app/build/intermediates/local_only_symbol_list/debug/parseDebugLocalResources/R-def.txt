@@ -21,6 +21,7 @@ string cd_flip_camera_button
 string cd_history_button
 string cd_live_inference_button
 string cd_result_image
+string cd_settings_button
 string cd_torch_button
 string error_camera_init
 string error_crop_invalid

@@ -21,16 +21,21 @@ object AdaptiveCLAHEProcessor {
         Imgproc.cvtColor(mat, labMat, Imgproc.COLOR_BGR2Lab)
         val channels = mutableListOf<Mat>()
         Core.split(labMat, channels)
-        val lChannel = channels[0]
+        
+        // CRITICAL FIX: Keep reference to original L channel for proper cleanup
+        val lChannelOriginal = channels[0]
+        
         val meanStd = MatOfDouble()
-        Core.meanStdDev(lChannel, MatOfDouble(), meanStd)
+        Core.meanStdDev(lChannelOriginal, MatOfDouble(), meanStd)
         val stdL = meanStd.get(0, 0)[0]
 
         val clipLimit = (CLAHE_CLIP_MAX - (CLAHE_CLIP_MAX - CLAHE_CLIP_MIN) * (stdL / (0.20 * 255.0)))
             .coerceIn(CLAHE_CLIP_MIN, CLAHE_CLIP_MAX)
         val clahe = Imgproc.createCLAHE(clipLimit, TILE_GRID)
         val lEnhanced = Mat()
-        clahe.apply(lChannel, lEnhanced)
+        clahe.apply(lChannelOriginal, lEnhanced)
+        
+        // Replace L channel with enhanced version
         channels[0] = lEnhanced
 
         Core.merge(channels, labMat)
@@ -39,10 +44,13 @@ object AdaptiveCLAHEProcessor {
         val result = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(mat, result)
 
+        // Cleanup - release ALL Mat objects including original L channel
         mat.release()
         labMat.release()
         meanStd.release()
-        channels.forEach { it.release() }
+        lChannelOriginal.release()  // CRITICAL: Release original L channel
+        channels.forEach { it.release() }  // This releases lEnhanced, a, b
+        
         return result
     }
 }

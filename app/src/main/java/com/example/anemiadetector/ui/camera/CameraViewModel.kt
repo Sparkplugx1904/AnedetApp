@@ -32,7 +32,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class CameraViewModel @Inject constructor(
-    private val inferenceRepository: InferenceRepository
+    private val inferenceRepository: InferenceRepository,
+    private val examinationRepository: com.example.anemiadetector.data.repository.ExaminationRepository
 ) : ViewModel() {
 
     companion object {
@@ -56,6 +57,11 @@ class CameraViewModel @Inject constructor(
     // Frame buffer
     private var lastFrameBitmap: Bitmap? = null
     private var lastPreprocessedBitmap: Bitmap? = null
+    private var lastDetectionResult: DetectionResult? = null
+    
+    // Result bitmap for display
+    private val _resultBitmap = MutableStateFlow<Bitmap?>(null)
+    val resultBitmap: StateFlow<Bitmap?> = _resultBitmap.asStateFlow()
 
     // Timing
     private var lastSegInferenceMs = 0L
@@ -113,8 +119,10 @@ class CameraViewModel @Inject constructor(
                 )
 
                 if (detection != null) {
+                    lastDetectionResult = detection
                     _inferenceState.value = InferenceState.Success(detection, null)
                 } else {
+                    lastDetectionResult = null
                     _inferenceState.value = InferenceState.NoDetection()
                 }
                 
@@ -172,6 +180,13 @@ class CameraViewModel @Inject constructor(
 
                 // Classify
                 val classification = inferenceRepository.classify(crop)
+                
+                // Store detection result
+                lastDetectionResult = detection
+
+                // Generate masked bitmap for display
+                val maskedBitmap = generateMaskedBitmap(frame, detection, classification)
+                _resultBitmap.value = maskedBitmap
 
                 _inferenceState.value = InferenceState.Success(detection, classification)
 
@@ -277,21 +292,30 @@ class CameraViewModel @Inject constructor(
 
     /**
      * Crop conjunctiva region from preprocessed bitmap
+     * FIXED: Account for letterbox offset when scaling coordinates
      */
     private fun cropConjunctiva(
         preprocessed: Bitmap,
         bbox: RectF,
         polygon: List<android.graphics.PointF>
     ): Bitmap {
-        // Scale bbox from frame coordinates to preprocessed bitmap coordinates (224x224)
+        // Letterbox resize calculation
+        // Original frame: 1280x720
+        // Target size: 224x224
+        val scale = 224f / FRAME_WIDTH  // = 0.175
+        val newHeight = (FRAME_HEIGHT * scale).toInt()  // = 126px
+        val yOffset = (224 - newHeight) / 2  // = 49px (black padding top/bottom)
+        
+        // Scale bbox from frame coordinates to preprocessed bitmap coordinates
+        // Account for letterbox offset
         val scaleX = 224f / FRAME_WIDTH
-        val scaleY = 224f / FRAME_HEIGHT
-
+        val scaleY = newHeight.toFloat() / FRAME_HEIGHT  // Scale to actual content height
+        
         val scaledBbox = RectF(
             bbox.left * scaleX,
-            bbox.top * scaleY,
+            bbox.top * scaleY + yOffset,  // Add y offset for letterbox padding
             bbox.right * scaleX,
-            bbox.bottom * scaleY
+            bbox.bottom * scaleY + yOffset
         )
 
         // Ensure bbox is within bounds
@@ -317,6 +341,24 @@ class CameraViewModel @Inject constructor(
         tempCrop.recycle()
         
         return crop
+    }
+    
+    /**
+     * Generate masked bitmap for display in result sheet
+     * Draws polygon overlay on original frame
+     */
+    private fun generateMaskedBitmap(
+        originalFrame: Bitmap,
+        detection: DetectionResult,
+        classification: ClassificationResult
+    ): Bitmap {
+        val color = com.example.anemiadetector.utils.PolygonUtils.getStatusColor(classification.isAnemic)
+        return com.example.anemiadetector.utils.PolygonUtils.fillPolygonAlpha(
+            originalFrame,
+            detection.polygon,
+            color,
+            alpha = 77  // ~30% opacity
+        )
     }
 
     /**
@@ -348,6 +390,57 @@ class CameraViewModel @Inject constructor(
      */
     fun resetState() {
         _inferenceState.value = InferenceState.Idle
+        _resultBitmap.value = null
+    }
+    
+    /**
+     * Save examination result to gallery and database
+     * 
+     * @param context Application context
+     * @param bitmap Masked bitmap to save
+     * @param classification Classification result
+     * @return true if save successful, false otherwise
+     */
+    suspend fun saveExamination(
+        context: android.content.Context,
+        bitmap: Bitmap,
+        classification: ClassificationResult
+    ): Boolean {
+        return try {
+            // Save to MediaStore (Gallery)
+            val uri = com.example.anemiadetector.utils.MediaStoreUtils.saveBitmapToGallery(
+                context,
+                bitmap
+            )
+            
+            if (uri == null) {
+                android.util.Log.e("CameraViewModel", "Failed to save image to gallery")
+                return false
+            }
+            
+            val imagePath = com.example.anemiadetector.utils.MediaStoreUtils.getPathFromUri(uri)
+            
+            // Save to Room database with correct field names
+            val examination = com.example.anemiadetector.data.local.entity.ExaminationEntity(
+                timestamp = System.currentTimeMillis(),
+                labelAnemia = classification.allScores?.get(0) ?: classification.confidence,
+                labelNonAnemia = classification.allScores?.get(1) ?: (1f - classification.confidence),
+                predictedLabel = if (classification.isAnemic) "ANEMIA" else "NON_ANEMIA",
+                confidence = classification.confidence,
+                imagePath = imagePath,
+                mode = "SINGLE_CAPTURE"
+            )
+            
+            // Save to database using repository
+            examinationRepository.insert(examination)
+            
+            android.util.Log.d("CameraViewModel", "Examination saved successfully: $imagePath")
+            true
+            
+        } catch (e: Exception) {
+            android.util.Log.e("CameraViewModel", "Failed to save examination", e)
+            false
+        }
     }
 
     /**

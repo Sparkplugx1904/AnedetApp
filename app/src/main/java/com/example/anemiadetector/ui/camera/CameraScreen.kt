@@ -72,10 +72,10 @@ fun CameraScreen(
     val inferenceState by viewModel.inferenceState.collectAsState()
     val torchEnabled by viewModel.torchEnabled.collectAsState()
     val liveInferenceEnabled by viewModel.liveInferenceEnabled.collectAsState()
+    val resultBitmap by viewModel.resultBitmap.collectAsState()
     
     var showWarningDialog by remember { mutableStateOf(false) }
     var showResultSheet by remember { mutableStateOf(false) }
-    var resultBitmap by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
     var cameraSelector by remember { mutableStateOf(CameraSelector.DEFAULT_BACK_CAMERA) }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -91,11 +91,21 @@ fun CameraScreen(
     // Re-check permissions when app resumes (user returns from Settings)
     androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                Log.d("CameraScreen", "App resumed, re-checking permissions")
-                val newPermissionState = com.example.anemiadetector.utils.PermissionUtils.hasAllPermissions(context)
-                Log.d("CameraScreen", "Manual check result: $newPermissionState")
-                hasPermissions = newPermissionState
+            when (event) {
+                androidx.lifecycle.Lifecycle.Event.ON_RESUME -> {
+                    Log.d("CameraScreen", "App resumed, re-checking permissions")
+                    val newPermissionState = com.example.anemiadetector.utils.PermissionUtils.hasAllPermissions(context)
+                    Log.d("CameraScreen", "Manual check result: $newPermissionState")
+                    hasPermissions = newPermissionState
+                }
+                androidx.lifecycle.Lifecycle.Event.ON_STOP -> {
+                    // Stop live inference when app goes to background
+                    if (liveInferenceEnabled) {
+                        Log.d("CameraScreen", "App stopped, pausing live inference")
+                        viewModel.toggleLiveInference(false)
+                    }
+                }
+                else -> {}
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -111,10 +121,6 @@ fun CameraScreen(
                 if (state.classificationResult != null && !liveInferenceEnabled) {
                     // Single capture mode - show result sheet
                     showResultSheet = true
-                    
-                    // Generate masked bitmap for display
-                    // TODO: Get original frame from viewModel
-                    // For now, we'll handle this in the result sheet
                 }
             }
             is InferenceState.Error -> {
@@ -137,16 +143,18 @@ fun CameraScreen(
         ) {
             if (hasPermissions) {
                 // Camera preview
-                CameraPreview(
-                    cameraSelector = cameraSelector,
-                    onFrameAnalyzed = { bitmap ->
-                        viewModel.processFrameForSegmentation(bitmap)
-                    },
-                    onCameraReady = { control, info ->
-                        viewModel.setCameraControl(control, info)
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
+                key(cameraSelector) {
+                    CameraPreview(
+                        cameraSelector = cameraSelector,
+                        onFrameAnalyzed = { bitmap ->
+                            viewModel.processFrameForSegmentation(bitmap)
+                        },
+                        onCameraReady = { control, info ->
+                            viewModel.setCameraControl(control, info)
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
                 // Overlay canvas
                 when (val state = inferenceState) {
@@ -217,6 +225,7 @@ fun CameraScreen(
                         }
                     },
                     onHistory = onNavigateToHistory,
+                    onSettings = onNavigateToSettings,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 32.dp)
@@ -256,11 +265,24 @@ fun CameraScreen(
                 resultBitmap = resultBitmap,
                 classificationResult = classification,
                 onSave = {
-                    // TODO: Implement save functionality
                     scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.saved_to_gallery)
-                        )
+                        val bitmap = resultBitmap
+                        if (bitmap != null) {
+                            val success = viewModel.saveExamination(context, bitmap, classification)
+                            if (success) {
+                                snackbarHostState.showSnackbar(
+                                    message = context.getString(R.string.saved_to_gallery)
+                                )
+                            } else {
+                                snackbarHostState.showSnackbar(
+                                    message = "Failed to save image"
+                                )
+                            }
+                        } else {
+                            snackbarHostState.showSnackbar(
+                                message = "No image to save"
+                            )
+                        }
                         showResultSheet = false
                     }
                 },
@@ -353,85 +375,111 @@ private fun BottomActionBar(
     onCapture: () -> Unit,
     onLiveInferenceToggle: () -> Unit,
     onHistory: () -> Unit,
+    onSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Torch button
-        IconButton(
-            onClick = onTorchToggle,
+        // Top row - Settings button
+        Row(
             modifier = Modifier
-                .size(48.dp)
-                .background(
-                    color = if (torchEnabled) Color.White.copy(alpha = 0.3f) else Color.Transparent,
-                    shape = CircleShape
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(
+                onClick = onSettings,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.cd_settings_button),
+                    tint = Color.White
                 )
-        ) {
-            Icon(
-                imageVector = if (torchEnabled) Icons.Default.FlashOn else Icons.Default.FlashOff,
-                contentDescription = stringResource(R.string.cd_torch_button),
-                tint = Color.White
-            )
+            }
         }
-
-        // Flip camera button
-        IconButton(
-            onClick = onFlipCamera,
-            modifier = Modifier.size(48.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.FlipCameraAndroid,
-                contentDescription = stringResource(R.string.cd_flip_camera_button),
-                tint = Color.White
-            )
-        }
-
-        // Capture button (large)
-        FloatingActionButton(
-            onClick = onCapture,
-            modifier = Modifier.size(72.dp),
-            containerColor = Color.White
-        ) {
-            Icon(
-                imageVector = Icons.Default.CameraAlt,
-                contentDescription = stringResource(R.string.cd_capture_button),
-                tint = Color.Black,
-                modifier = Modifier.size(32.dp)
-            )
-        }
-
-        // Live inference toggle
-        IconButton(
-            onClick = onLiveInferenceToggle,
+        
+        // Main control row
+        Row(
             modifier = Modifier
-                .size(48.dp)
-                .background(
-                    color = if (liveInferenceEnabled) Color(0xFFFF3B30).copy(alpha = 0.8f) else Color.Transparent,
-                    shape = CircleShape
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Torch button
+            IconButton(
+                onClick = onTorchToggle,
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(
+                        color = if (torchEnabled) Color.White.copy(alpha = 0.3f) else Color.Transparent,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = if (torchEnabled) Icons.Default.FlashOn else Icons.Default.FlashOff,
+                    contentDescription = stringResource(R.string.cd_torch_button),
+                    tint = Color.White
                 )
-        ) {
-            Icon(
-                imageVector = Icons.Default.Bolt,
-                contentDescription = stringResource(R.string.cd_live_inference_button),
-                tint = Color.White
-            )
-        }
+            }
 
-        // History button
-        IconButton(
-            onClick = onHistory,
-            modifier = Modifier.size(48.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.History,
-                contentDescription = stringResource(R.string.cd_history_button),
-                tint = Color.White
-            )
+            // Flip camera button
+            IconButton(
+                onClick = onFlipCamera,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FlipCameraAndroid,
+                    contentDescription = stringResource(R.string.cd_flip_camera_button),
+                    tint = Color.White
+                )
+            }
+
+            // Capture button (large)
+            FloatingActionButton(
+                onClick = onCapture,
+                modifier = Modifier.size(72.dp),
+                containerColor = Color.White
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CameraAlt,
+                    contentDescription = stringResource(R.string.cd_capture_button),
+                    tint = Color.Black,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+
+            // Live inference toggle
+            IconButton(
+                onClick = onLiveInferenceToggle,
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(
+                        color = if (liveInferenceEnabled) Color(0xFFFF3B30).copy(alpha = 0.8f) else Color.Transparent,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Bolt,
+                    contentDescription = stringResource(R.string.cd_live_inference_button),
+                    tint = Color.White
+                )
+            }
+
+            // History button
+            IconButton(
+                onClick = onHistory,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.History,
+                    contentDescription = stringResource(R.string.cd_history_button),
+                    tint = Color.White
+                )
+            }
         }
     }
 }
@@ -534,12 +582,23 @@ private fun PermissionDeniedScreen(
 
 /**
  * Extension function to convert ImageProxy to Bitmap
+ * FIXED: CameraX RGBA_8888 format provides raw pixel bytes, not encoded image
+ * BitmapFactory.decodeByteArray() only works with JPEG/PNG encoded data
  */
 private fun ImageProxy.toBitmap(): android.graphics.Bitmap {
+    // Create bitmap with correct dimensions and config
+    val bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888)
+    
+    // Get buffer from first plane (RGBA_8888 has only one plane)
     val buffer = planes[0].buffer
-    val bytes = ByteArray(buffer.remaining())
-    buffer.get(bytes)
-    return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    
+    // Rewind buffer to start position
+    buffer.rewind()
+    
+    // Copy raw pixel data directly to bitmap
+    bitmap.copyPixelsFromBuffer(buffer)
+    
+    return bitmap
 }
 
 

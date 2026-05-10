@@ -90,5 +90,6 @@
     <string name="cd_flip_camera_button">Tombol balik kamera</string>
     <string name="cd_live_inference_button">Tombol inferensi langsung</string>
     <string name="cd_history_button">Tombol riwayat</string>
+    <string name="cd_settings_button">Tombol pengaturan</string>
     <string name="cd_result_image">Gambar hasil</string>
 </resources>

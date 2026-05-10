@@ -1,5 +1,6 @@
 package com.example.anemiadetector.ui.camera;
 
+import com.example.anemiadetector.data.repository.ExaminationRepository;
 import com.example.anemiadetector.data.repository.InferenceRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -25,21 +26,27 @@ import javax.inject.Provider;
 public final class CameraViewModel_Factory implements Factory<CameraViewModel> {
   private final Provider<InferenceRepository> inferenceRepositoryProvider;
 
-  public CameraViewModel_Factory(Provider<InferenceRepository> inferenceRepositoryProvider) {
+  private final Provider<ExaminationRepository> examinationRepositoryProvider;
+
+  public CameraViewModel_Factory(Provider<InferenceRepository> inferenceRepositoryProvider,
+      Provider<ExaminationRepository> examinationRepositoryProvider) {
     this.inferenceRepositoryProvider = inferenceRepositoryProvider;
+    this.examinationRepositoryProvider = examinationRepositoryProvider;
   }
 
   @Override
   public CameraViewModel get() {
-    return newInstance(inferenceRepositoryProvider.get());
+    return newInstance(inferenceRepositoryProvider.get(), examinationRepositoryProvider.get());
   }
 
   public static CameraViewModel_Factory create(
-      Provider<InferenceRepository> inferenceRepositoryProvider) {
-    return new CameraViewModel_Factory(inferenceRepositoryProvider);
+      Provider<InferenceRepository> inferenceRepositoryProvider,
+      Provider<ExaminationRepository> examinationRepositoryProvider) {
+    return new CameraViewModel_Factory(inferenceRepositoryProvider, examinationRepositoryProvider);
   }
 
-  public static CameraViewModel newInstance(InferenceRepository inferenceRepository) {
-    return new CameraViewModel(inferenceRepository);
+  public static CameraViewModel newInstance(InferenceRepository inferenceRepository,
+      ExaminationRepository examinationRepository) {
+    return new CameraViewModel(inferenceRepository, examinationRepository);
   }
 }
