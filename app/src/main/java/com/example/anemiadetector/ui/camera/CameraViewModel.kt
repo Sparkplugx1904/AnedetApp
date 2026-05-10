@@ -249,6 +249,7 @@ class CameraViewModel @Inject constructor(
 
     /**
      * Run full pipeline (preprocessing + segmentation + classification)
+     * FIXED: Update _resultBitmap for live inference mode
      */
     private suspend fun runFullPipeline(frame: Bitmap) {
         try {
@@ -278,6 +279,13 @@ class CameraViewModel @Inject constructor(
 
             // Classify
             val classification = inferenceRepository.classify(crop)
+            
+            // Store detection result
+            lastDetectionResult = detection
+
+            // Generate masked bitmap for display (same as captureAndClassify)
+            val maskedBitmap = generateMaskedBitmap(frame, detection, classification)
+            _resultBitmap.value = maskedBitmap
 
             _inferenceState.value = InferenceState.Success(detection, classification)
 
@@ -425,7 +433,7 @@ class CameraViewModel @Inject constructor(
                 timestamp = System.currentTimeMillis(),
                 labelAnemia = classification.allScores?.get(0) ?: classification.confidence,
                 labelNonAnemia = classification.allScores?.get(1) ?: (1f - classification.confidence),
-                predictedLabel = if (classification.isAnemic) "ANEMIA" else "NON_ANEMIA",
+                predictedLabel = classification.label,  // ← FIXED: Use classification.label directly (title case)
                 confidence = classification.confidence,
                 imagePath = imagePath,
                 mode = "SINGLE_CAPTURE"

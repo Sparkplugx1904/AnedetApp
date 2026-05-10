@@ -405,17 +405,17 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
-
       static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
+
+      static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
 
       static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
 
       @KeepFieldType
-      CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;
+      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
 
       @KeepFieldType
-      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
+      CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;
 
       @KeepFieldType
       SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
@@ -465,20 +465,20 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
+      static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
+
       static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
 
       static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
 
-      static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
+      @KeepFieldType
+      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
 
       @KeepFieldType
       SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
 
       @KeepFieldType
       CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;
-
-      @KeepFieldType
-      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -503,7 +503,7 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
       public T get() {
         switch (id) {
           case 0: // com.example.anemiadetector.ui.camera.CameraViewModel 
-          return (T) new CameraViewModel(singletonCImpl.provideInferenceRepositoryProvider.get());
+          return (T) new CameraViewModel(singletonCImpl.provideInferenceRepositoryProvider.get(), singletonCImpl.examinationRepositoryProvider.get());
 
           case 1: // com.example.anemiadetector.ui.history.HistoryViewModel 
           return (T) new HistoryViewModel(singletonCImpl.examinationRepositoryProvider.get());
