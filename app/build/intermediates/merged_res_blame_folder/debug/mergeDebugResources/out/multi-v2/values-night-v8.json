@@ -1,19 +1,11 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-73:/values-night-v8/values-night-v8.xml",
+            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-3:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Ananda\\Documents\\GitHub\\AnedetApp\\app\\src\\main\\res\\values-night\\themes.xml",
+                    "source": "/app/app/src/main/res/values-night/themes.xml",
                     "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "57",
-                        "endLines": "4",
-                        "endColumns": "12",
-                        "endOffsets": "229"
-                    },
-                    "to": {
                         "startLines": "2",
                         "startColumns": "4",
                         "startOffsets": "55",
@@ -23,7 +15,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Ananda\\.gradle\\caches\\8.10.2\\transforms\\1a9d07133ddff6bd8f2f49af000f360b\\transformed\\appcompat-1.6.1\\res\\values-night-v8\\values-night-v8.xml",
+                    "source": "/home/jules/.gradle/caches/8.8/transforms/b77c03c9926384fda42cf80d7104ea14/transformed/appcompat-1.6.1/res/values-night-v8/values-night-v8.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

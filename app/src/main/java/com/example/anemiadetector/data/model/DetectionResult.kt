@@ -10,10 +10,14 @@ import android.graphics.RectF
  * @param boundingBox Bounding box in original frame coordinates
  * @param maskBitmap Binary mask with alpha fill for overlay
  * @param confidence Detection confidence score
+ * @param frameWidth Original frame width
+ * @param frameHeight Original frame height
  */
 data class DetectionResult(
     val polygon: List<PointF>,
     val boundingBox: RectF,
     val maskBitmap: Bitmap,
-    val confidence: Float
+    val confidence: Float,
+    val frameWidth: Int,
+    val frameHeight: Int
 )

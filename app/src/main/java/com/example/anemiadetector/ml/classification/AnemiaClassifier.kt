@@ -44,7 +44,15 @@ class AnemiaClassifier @Inject constructor(
             setUseNNAPI(false)
         }
         interpreter = Interpreter(loadModelBuffer(context, MODEL_PATH), options)
-        inputSize = interpreter.getInputTensor(0).shape()[1]
+
+        val inputShape = interpreter.getInputTensor(0).shape()
+        // Input shape usually [1, H, W, 3] or [1, 3, H, W]
+        inputSize = if (inputShape[1] == 3) {
+            inputShape[2] // NCHW
+        } else {
+            inputShape[1] // NHWC
+        }
+        Log.d("AnemiaClassifier", "Model input shape: ${inputShape.contentToString()}, selected inputSize: $inputSize")
     }
 
     fun classify(conjunctivaCrop: Bitmap): ClassificationResult {

@@ -51,7 +51,9 @@ class InferenceRepositoryImpl @Inject constructor(
                     polygon = it.polygon,
                     boundingBox = it.boundingBox,
                     maskBitmap = maskedBitmap,
-                    confidence = it.confidence
+                    confidence = it.confidence,
+                    frameWidth = originalWidth,
+                    frameHeight = originalHeight
                 )
             }
         }

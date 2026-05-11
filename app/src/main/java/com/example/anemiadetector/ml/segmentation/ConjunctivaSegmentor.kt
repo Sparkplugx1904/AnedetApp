@@ -189,18 +189,34 @@ class ConjunctivaSegmentor @Inject constructor(
             
             // Filter by confidence threshold
             if (confidence < CONF_THRESHOLD) {
-                // Detections are sorted by confidence, so we can break early
-                break
+                // JANGAN break, karena output model mungkin tidak terurut berdasarkan confidence
+                continue
             }
             
             // Filter by class (0 = conjunctiva)
             if (classId != 0) continue
             
-            // Denormalize coordinates from [0-1] to original frame size
-            val x1Denorm = x1 * originalWidth
-            val y1Denorm = y1 * originalHeight
-            val x2Denorm = x2 * originalWidth
-            val y2Denorm = y2 * originalHeight
+            // Robust denormalization: detect if coordinates are [0,1] or [0,320]
+            val x1Denorm: Float
+            val y1Denorm: Float
+            val x2Denorm: Float
+            val y2Denorm: Float
+
+            if (x1 <= 1.0f && y1 <= 1.0f && x2 <= 1.1f && y2 <= 1.1f && (x1 != 0f || x2 != 0f)) {
+                // Coordinates are likely normalized [0, 1]
+                x1Denorm = x1 * originalWidth
+                y1Denorm = y1 * originalHeight
+                x2Denorm = x2 * originalWidth
+                y2Denorm = y2 * originalHeight
+                Log.d("ConjunctivaSegmentor", "Detected normalized coordinates: [$x1, $y1, $x2, $y2]")
+            } else {
+                // Coordinates are likely in pixel space [0, 320]
+                x1Denorm = (x1 / INPUT_SIZE) * originalWidth
+                y1Denorm = (y1 / INPUT_SIZE) * originalHeight
+                x2Denorm = (x2 / INPUT_SIZE) * originalWidth
+                y2Denorm = (y2 / INPUT_SIZE) * originalHeight
+                Log.d("ConjunctivaSegmentor", "Detected pixel-space coordinates: [$x1, $y1, $x2, $y2]")
+            }
             
             // Create bounding box
             val bbox = RectF(x1Denorm, y1Denorm, x2Denorm, y2Denorm)

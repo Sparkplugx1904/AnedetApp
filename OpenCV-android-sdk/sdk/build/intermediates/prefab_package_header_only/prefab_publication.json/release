@@ -1,5 +1,5 @@
 {
-  "installationFolder": "C:\\Users\\Ananda\\Documents\\GitHub\\AnedetApp\\OpenCV-android-sdk\\sdk\\build\\intermediates\\prefab_package\\release\\prefab",
+  "installationFolder": "/app/OpenCV-android-sdk/sdk/build/intermediates/prefab_package/release/prefab",
   "gradlePath": ":opencv",
   "packageInfo": {
     "packageName": "opencv",
@@ -8,7 +8,7 @@
     "modules": [
       {
         "moduleName": "opencv_jni_shared",
-        "moduleHeaders": "C:\\Users\\Ananda\\Documents\\GitHub\\AnedetApp\\OpenCV-android-sdk\\sdk\\native\\jni\\include",
+        "moduleHeaders": "/app/OpenCV-android-sdk/sdk/native/jni/include",
         "moduleExportLibraries": [],
         "abis": []
       }

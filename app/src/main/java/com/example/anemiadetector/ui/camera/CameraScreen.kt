@@ -162,8 +162,8 @@ fun CameraScreen(
                         ConjunctivaOverlay(
                             detectionResult = state.detectionResult,
                             classificationResult = state.classificationResult,
-                            frameWidth = CameraViewModel.FRAME_WIDTH,
-                            frameHeight = CameraViewModel.FRAME_HEIGHT,
+                            frameWidth = state.detectionResult.frameWidth,
+                            frameHeight = state.detectionResult.frameHeight,
                             showClassificationOverlay = liveInferenceEnabled,
                             modifier = Modifier.fillMaxSize()
                         )

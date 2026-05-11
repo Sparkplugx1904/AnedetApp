@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-73:/values-sw600dp-v13/values-sw600dp-v13.xml",
+            "outputFile": "com.example.anemiadetector.app-mergeDebugResources-3:/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Ananda\\.gradle\\caches\\8.10.2\\transforms\\1a9d07133ddff6bd8f2f49af000f360b\\transformed\\appcompat-1.6.1\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+                    "source": "/home/jules/.gradle/caches/8.8/transforms/b77c03c9926384fda42cf80d7104ea14/transformed/appcompat-1.6.1/res/values-sw600dp-v13/values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

@@ -87,6 +87,14 @@ class CameraViewModel @Inject constructor(
      * Called from ImageAnalysis analyzer
      */
     fun processFrameForSegmentation(bitmap: Bitmap) {
+        // Skip segmentation if processing a capture or showing results
+        if (_inferenceState.value is InferenceState.Processing ||
+            (_inferenceState.value is InferenceState.Success &&
+             (_inferenceState.value as InferenceState.Success).classificationResult != null)) {
+            bitmap.recycle()
+            return
+        }
+
         val now = SystemClock.elapsedRealtime()
         
         // Frame skip for FPS management
