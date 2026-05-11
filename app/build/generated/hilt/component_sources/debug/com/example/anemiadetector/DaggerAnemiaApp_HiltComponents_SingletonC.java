@@ -406,17 +406,17 @@ public final class DaggerAnemiaApp_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
-
       static String com_example_anemiadetector_ui_history_HistoryViewModel = "com.example.anemiadetector.ui.history.HistoryViewModel";
+
+      static String com_example_anemiadetector_ui_settings_SettingsViewModel = "com.example.anemiadetector.ui.settings.SettingsViewModel";
 
       static String com_example_anemiadetector_ui_camera_CameraViewModel = "com.example.anemiadetector.ui.camera.CameraViewModel";
 
       @KeepFieldType
-      SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
+      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
 
       @KeepFieldType
-      HistoryViewModel com_example_anemiadetector_ui_history_HistoryViewModel2;
+      SettingsViewModel com_example_anemiadetector_ui_settings_SettingsViewModel2;
 
       @KeepFieldType
       CameraViewModel com_example_anemiadetector_ui_camera_CameraViewModel2;

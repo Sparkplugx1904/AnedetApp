@@ -55,15 +55,12 @@ class InferenceRepositoryImpl @Inject constructor(
             val result = segmentor.segment(preprocessedBitmap, originalWidth, originalHeight)
             result?.let {
                 // Convert ConjunctivaSegmentor.SegmentationResult to DetectionResult
-                // Generate mask bitmap with alpha fill
-                val maskBitmap = Bitmap.createBitmap(originalWidth, originalHeight, Bitmap.Config.ARGB_8888)
-                val color = PolygonUtils.getStatusColor(null) // Blue for segmentation only
-                val maskedBitmap = PolygonUtils.fillPolygonAlpha(maskBitmap, it.polygon, color, 77)
-                
+                // NOTE: maskBitmap is not used in UI (overlay drawn directly on Canvas)
+                // If needed in future, pass originalFrame here instead of creating empty bitmap
                 DetectionResult(
                     polygon = it.polygon,
                     boundingBox = it.boundingBox,
-                    maskBitmap = maskedBitmap,
+                    maskBitmap = null,  // Not used, set to null to save memory
                     confidence = it.confidence
                 )
             }

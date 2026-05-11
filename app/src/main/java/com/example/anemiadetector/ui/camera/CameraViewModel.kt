@@ -152,9 +152,12 @@ class CameraViewModel @Inject constructor(
      * Uses last buffered frame
      * 
      * FIXED: Use correct preprocessing for each stage
+     * FIXED: Create independent copy to avoid race condition with processFrameForSegmentation
      */
     fun captureAndClassify() {
-        val frame = lastFrameBitmap ?: run {
+        // CRITICAL: Create independent copy IMMEDIATELY before launching coroutine
+        // to avoid race condition with processFrameForSegmentation which recycles lastFrameBitmap
+        val frame = lastFrameBitmap?.copy(Bitmap.Config.ARGB_8888, false) ?: run {
             _inferenceState.value = InferenceState.Error("No frame available")
             return
         }
@@ -216,6 +219,9 @@ class CameraViewModel @Inject constructor(
                     "Classification failed: ${e.message}",
                     e
                 )
+            } finally {
+                // Always recycle the independent frame copy
+                frame.recycle()
             }
         }
     }
@@ -268,11 +274,15 @@ class CameraViewModel @Inject constructor(
      * Run full pipeline (preprocessing + segmentation + classification)
      * FIXED: Update _resultBitmap for live inference mode
      * FIXED: Use correct preprocessing for each stage
+     * FIXED: Create independent copy to avoid race condition
      */
     private suspend fun runFullPipeline(frame: Bitmap) {
+        // CRITICAL: Create independent copy to avoid race condition
+        val localFrame = frame.copy(Bitmap.Config.ARGB_8888, false)
+        
         try {
             // Step 1: Preprocess for segmentation (no letterbox)
-            val preprocessedForSeg = inferenceRepository.preprocessForSegmentation(frame)
+            val preprocessedForSeg = inferenceRepository.preprocessForSegmentation(localFrame)
 
             // Step 2: Segment
             val detection = inferenceRepository.segment(
@@ -289,7 +299,7 @@ class CameraViewModel @Inject constructor(
             preprocessedForSeg.recycle()
 
             // Step 3: Preprocess for classification (with letterbox 224)
-            val preprocessedForClass = inferenceRepository.preprocess(frame)
+            val preprocessedForClass = inferenceRepository.preprocess(localFrame)
             
             // Step 4: Crop
             val crop = cropConjunctiva(preprocessedForClass, detection.boundingBox, detection.polygon)
@@ -310,7 +320,7 @@ class CameraViewModel @Inject constructor(
             lastDetectionResult = detection
 
             // Generate masked bitmap for display (same as captureAndClassify)
-            val maskedBitmap = generateMaskedBitmap(frame, detection, classification)
+            val maskedBitmap = generateMaskedBitmap(localFrame, detection, classification)
             _resultBitmap.value = maskedBitmap
 
             _inferenceState.value = InferenceState.Success(detection, classification)
@@ -320,6 +330,9 @@ class CameraViewModel @Inject constructor(
 
         } catch (e: Exception) {
             _inferenceState.value = InferenceState.Error("Inference failed: ${e.message}", e)
+        } finally {
+            // Always recycle the independent frame copy
+            localFrame.recycle()
         }
     }
 

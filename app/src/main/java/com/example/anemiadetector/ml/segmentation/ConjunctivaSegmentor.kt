@@ -204,9 +204,9 @@ class ConjunctivaSegmentor @Inject constructor(
             
             // Filter by confidence threshold
             if (confidence < CONF_THRESHOLD) {
-                // Detections are sorted by confidence, so we can break early
-                Log.d("ConjunctivaSegmentor", "Stopped at detection $i, confidence $confidence < $CONF_THRESHOLD")
-                break
+                // FIXED: Use continue instead of break for unsorted outputs
+                // Some model versions may not guarantee sorted detections
+                continue
             }
             
             // Filter by class (0 = conjunctiva)
@@ -508,7 +508,7 @@ class ConjunctivaSegmentor @Inject constructor(
             contours,
             hierarchy,
             org.opencv.imgproc.Imgproc.RETR_EXTERNAL,
-            org.opencv.imgproc.Imgproc.CHAIN_APPROX_SIMPLE
+            org.opencv.imgproc.Imgproc.CHAIN_APPROX_NONE  // FIXED: Get all boundary pixels for smooth curves
         )
         
         // Find largest contour
